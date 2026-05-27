@@ -66,8 +66,9 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \
             -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}")
-          if [ "$response" != "200" ] && [ "$response" != "201" ]; then
+
+          if [ "$response" != "200" ] && [ "$response" != "201" ] && [ "$response" != "202" ]; then
             echo "❌ Deploy failed with status: $response"
             exit 1
           fi
-          echo "✅ Deploy triggered (HTTP $response)"
+          echo "✅ Deploy triggered successfully (HTTP $response)"
