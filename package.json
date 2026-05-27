@@ -1,24 +1,23 @@
 {
-  "engines": {
-    "node": "v20.20.2"
-  },
-  "name": "project_1",
+  "name": "wanderlust",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "An Airbnb-inspired full-stack listing platform built with MERN stack",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "node --check app.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": ["airbnb", "mern", "express", "mongodb", "nodejs", "travel"],
+  "author": "Navneet",
+  "license": "MIT",
   "dependencies": {
     "cloudinary": "^1.21.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^6.0.0",
-    "dns": "^0.2.2",
     "dotenv": "^17.4.2",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
@@ -26,11 +25,14 @@
     "express-session": "^1.19.0",
     "joi": "^18.1.2",
     "method-override": "^3.0.0",
-    "mongodb": "^7.2.0",
     "mongoose": "^8.4.1",
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
     "passport-local-mongoose": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
