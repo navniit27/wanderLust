@@ -13,7 +13,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/expressError.js");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const connectMongo = require("connect-mongo"); // Clean and safe require
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -48,20 +48,34 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
+const ActualMongoStore = connectMongo.MongoStore || connectMongo.default || connectMongo;
+
+let store;
+if (typeof ActualMongoStore.create === "function") {
+  // Agar Render modern version (v4/v5/v6) uthata hai
+  store = ActualMongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+      secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600, 
+  });
+} else {
+  // Agar Render kisi cache ki wajah se legacy version (v3) par girta hai
+  const LegacyStore = typeof connectMongo === "function" ? connectMongo(session) : ActualMongoStore(session);
+  store = new LegacyStore({
+    url: dbUrl,
     secret: process.env.SECRET,
-  },
-  touchAfter: 24 * 3600, 
-});
+    touchAfter: 24 * 3600,
+  });
+}
 
 store.on("error", (err) => {
   console.error("❌ Session Store Error:", err);
 });
 
 const sessionOptions = {
-  store,                         
+  store,                        
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,       
