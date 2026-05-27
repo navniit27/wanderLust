@@ -61,7 +61,7 @@ if (typeof ActualMongoStore.create === "function") {
     touchAfter: 24 * 3600, 
   });
 } else {
-  // Agar Render kisi cache ki wajah se legacy version (v3) par girta hai
+
   const LegacyStore = typeof connectMongo === "function" ? connectMongo(session) : ActualMongoStore(session);
   store = new LegacyStore({
     url: dbUrl,
@@ -76,29 +76,27 @@ store.on("error", (err) => {
 
 const sessionOptions = {
   store,                        
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: false,       
+  secret: process.env.SECRET || "mysupersecretstring",
+  resave: true,        
+  saveUninitialized: true, 
   cookie: {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", 
-    sameSite: "strict",           
+    secure: false,    
+    sameSite: "lax",   
   },
 };
 
 app.use(session(sessionOptions));
 app.use(flash());
 
-// Passport Setup
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Global Locals Middleware
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
@@ -106,13 +104,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
 app.get("/", (req, res) => res.redirect("/listings"));
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-// 404 Handler
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
 });
