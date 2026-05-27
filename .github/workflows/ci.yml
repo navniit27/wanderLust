@@ -2,9 +2,9 @@ name: WanderLust CI/CD Pipeline
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
 
@@ -58,7 +58,7 @@ jobs:
   deploy:
     name: Deploy to Render
     needs: [lint-and-validate, docker-build]
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
