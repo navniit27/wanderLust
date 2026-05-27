@@ -11,7 +11,14 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "keywords": ["airbnb", "mern", "express", "mongodb", "nodejs", "travel"],
+  "keywords": [
+    "airbnb",
+    "mern",
+    "express",
+    "mongodb",
+    "nodejs",
+    "travel"
+  ],
   "author": "Navneet",
   "license": "MIT",
   "dependencies": {
