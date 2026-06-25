@@ -108,7 +108,6 @@
 
 .starability-slot > label {
   position: relative;
-  display: inline-block;
   float: left;
   width: 30px;
   height: 30px;
@@ -194,4 +193,102 @@
 .starability-slot > input:focus ~ label {
   -webkit-transition: background-position .7s;
   transition: background-position .7s;
+}
+
+/* =====================
+   TABLET (≤768px)
+   ===================== */
+@media (max-width: 768px) {
+  .starability-result {
+    width: 120px;
+    height: 24px;
+    background-size: 24px auto;
+  }
+
+  .starability-result:after {
+    height: 24px;
+    background-size: 24px auto;
+  }
+
+  /* Adjust filled widths for tablet */
+  .starability-result[data-rating="5"]::after { width: 120px; }
+  .starability-result[data-rating="4"]::after { width: 96px; }
+  .starability-result[data-rating="3"]::after { width: 72px; }
+  .starability-result[data-rating="2"]::after { width: 48px; }
+  .starability-result[data-rating="1"]::after { width: 24px; }
+
+  .starability-slot {
+    width: 120px;
+    min-height: 48px;
+  }
+
+  .starability-slot > label {
+    width: 24px;
+    height: 24px;
+    background-size: 24px auto;
+    background-position: 0 -24px;
+  }
+
+  .starability-slot > label::before {
+    height: 24px;
+  }
+
+  .starability-slot > label:nth-of-type(5)::before { width: 96px;  left: -96px; }
+  .starability-slot > label:nth-of-type(4)::before { width: 72px;  left: -72px; }
+  .starability-slot > label:nth-of-type(3)::before { width: 48px;  left: -48px; }
+  .starability-slot > label:nth-of-type(2)::before { width: 24px;  left: -24px; }
+  .starability-slot > label:nth-of-type(1)::before { width: 0px;   left: 0px;   }
+
+  .starability-slot .starability-focus-ring {
+    height: 24px;
+  }
+}
+
+/* =====================
+   MOBILE (≤480px)
+   ===================== */
+@media (max-width: 480px) {
+  .starability-result {
+    width: 100px;
+    height: 20px;
+    background-size: 20px auto;
+  }
+
+  .starability-result:after {
+    height: 20px;
+    background-size: 20px auto;
+  }
+
+  /* Adjust filled widths for mobile */
+  .starability-result[data-rating="5"]::after { width: 100px; }
+  .starability-result[data-rating="4"]::after { width: 80px; }
+  .starability-result[data-rating="3"]::after { width: 60px; }
+  .starability-result[data-rating="2"]::after { width: 40px; }
+  .starability-result[data-rating="1"]::after { width: 20px; }
+
+  .starability-slot {
+    width: 100px;
+    min-height: 44px; /* touch-friendly minimum */
+  }
+
+  .starability-slot > label {
+    width: 20px;
+    height: 20px;
+    background-size: 20px auto;
+    background-position: 0 -20px;
+  }
+
+  .starability-slot > label::before {
+    height: 20px;
+  }
+
+  .starability-slot > label:nth-of-type(5)::before { width: 80px;  left: -80px; }
+  .starability-slot > label:nth-of-type(4)::before { width: 60px;  left: -60px; }
+  .starability-slot > label:nth-of-type(3)::before { width: 40px;  left: -40px; }
+  .starability-slot > label:nth-of-type(2)::before { width: 20px;  left: -20px; }
+  .starability-slot > label:nth-of-type(1)::before { width: 0px;   left: 0px;   }
+
+  .starability-slot .starability-focus-ring {
+    height: 20px;
+  }
 }
