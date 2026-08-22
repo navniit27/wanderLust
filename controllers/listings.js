@@ -1,5 +1,8 @@
 const Listing = require("../models/listing");
+const Review = require("../models/review");
 const { cloudinary } = require("../cloudConfig");
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 
 // ==========================================
@@ -12,9 +15,9 @@ module.exports.index = async (req, res) => {
 
     let filter = {};
 
-    if (search && search.trim() !== "") {
+    if (typeof search === "string" && search.trim() !== "") {
 
-        const searchTerm = search.trim();
+        const searchTerm = escapeRegExp(search.trim().slice(0, 100));
 
         filter = {
             $or: [
@@ -42,7 +45,8 @@ module.exports.index = async (req, res) => {
 
     const allListings = await Listing.find(filter)
         .select("title price image location country")
-        .sort({ _id: -1 });
+        .sort({ createdAt: -1 })
+        .lean();
 
     res.render(
         "listings/index.ejs",
@@ -59,7 +63,7 @@ module.exports.index = async (req, res) => {
 // ==========================================
 
 module.exports.renderNewForm = (req, res) => {
-    res.render("listings/new.ejs");
+    res.render("listings/new.ejs", { listing: {} });
 };
 
 
@@ -151,8 +155,7 @@ module.exports.renderEditForm = async (
 
     const { id } = req.params;
 
-    const listing =
-        await Listing.findById(id);
+    const listing = req.listing;
 
     if (!listing) {
 
@@ -197,8 +200,7 @@ module.exports.updateListing = async (
 
     const { id } = req.params;
 
-    const listing =
-        await Listing.findById(id);
+    const listing = req.listing;
 
     if (!listing) {
 
@@ -352,7 +354,12 @@ module.exports.deleteListing = async (
     // DELETE LISTING
     // ======================================
 
-    await Listing.findByIdAndDelete(id);
+    await Promise.all([
+        Review.deleteMany({
+            _id: { $in: listing.reviews },
+        }),
+        listing.deleteOne(),
+    ]);
 
     req.flash(
         "success",

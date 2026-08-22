@@ -1,18 +1,17 @@
-version: "3.9"
-
 services:
   app:
     build:
       context: .
-      target: production       
-    container_name: wanderlust_app   
+      target: production
+    container_name: wanderlust_app
     ports:
       - "127.0.0.1:8080:8080"
     env_file:
       - .env
     environment:
-      - NODE_ENV=production
-      - MONGO_URL=mongodb://mongo:27017/wanderlust
+      NODE_ENV: production
+      ATLASDB_URL: ""
+      MONGO_URL: mongodb://mongo:27017/wanderlust
     depends_on:
       mongo:
         condition: service_healthy
@@ -26,10 +25,8 @@ services:
       start_period: 20s
 
   mongo:
-    image: mongo:7                        
-    container_name: wanderlust_mongo     
-    ports:
-      - "127.0.0.1:27017:27017"          
+    image: mongo:7
+    container_name: wanderlust_mongo
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
@@ -42,4 +39,3 @@ services:
 
 volumes:
   mongo_data:
-    driver: local

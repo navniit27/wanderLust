@@ -17,3 +17,13 @@
     }, false)
   })
 })()
+
+const taxToggle = document.getElementById('tax-toggle')
+
+if (taxToggle) {
+  taxToggle.addEventListener('change', ({ target }) => {
+    document.querySelectorAll('.tax-info').forEach((taxInfo) => {
+      taxInfo.style.display = target.checked ? 'inline' : 'none'
+    })
+  })
+}

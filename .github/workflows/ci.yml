@@ -25,16 +25,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Check Syntax Errors
-        run: |
-          for file in app.js middleware.js schema.js cloudConfig.js \
-            controllers/listings.js controllers/reviews.js controllers/users.js \
-            routes/listings.js routes/review.js routes/user.js \
-            models/listing.js models/review.js models/user.js \
-            utils/expressError.js utils/wrapAsync.js; do
-            echo "Checking $file ..."
-            node --check "$file"
-          done
+      - name: Check JavaScript syntax
+        run: find . -path ./node_modules -prune -o -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Security Audit
         run: npm audit --audit-level=high

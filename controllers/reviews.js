@@ -43,28 +43,23 @@ module.exports.createReview = async (req, res) => {
 module.exports.deleteReview = async (req, res) => {
     const { id, reviewId } = req.params;
 
-    // Listing find karo
-    const listing = await Listing.findById(id);
+    // Ensure that the review belongs to this listing before deleting it.
+    const listing = await Listing.findOneAndUpdate(
+        { _id: id, reviews: reviewId },
+        { $pull: { reviews: reviewId } },
+    );
 
     if (!listing) {
-        req.flash("error", "Listing not found!");
-        return res.redirect("/listings");
-    }
-
-    // Review delete karo
-    const deletedReview = await Review.findByIdAndDelete(reviewId);
-
-    if (!deletedReview) {
-        req.flash("error", "Review not found!");
+        req.flash("error", "Review not found for this listing!");
         return res.redirect(`/listings/${id}`);
     }
 
-    // Listing ke reviews array se review ID remove karo
-    await Listing.findByIdAndUpdate(id, {
-        $pull: {
-            reviews: reviewId,
-        },
-    });
+    const deletedReview = await Review.findByIdAndDelete(reviewId);
+
+    if (!deletedReview) {
+        req.flash("error", "Review was already deleted!");
+        return res.redirect(`/listings/${id}`);
+    }
 
     req.flash("success", "Review deleted!");
 

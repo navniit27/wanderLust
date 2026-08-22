@@ -1,222 +1,115 @@
-<div align="center">
+# WanderLust
 
-# 🌍 WanderLust
+An Airbnb-inspired Node.js application for discovering, creating, and reviewing places to stay.
 
-> An Airbnb-inspired full-stack web application to discover and share extraordinary places to stay.
+[![CI](https://github.com/navniit27/wanderLust/actions/workflows/ci.yml/badge.svg)](https://github.com/navniit27/wanderLust/actions/workflows/ci.yml)
 
-![CI/CD Pipeline](https://github.com/navniit27/wanderLust/actions/workflows/ci.yml/badge.svg)
-![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)
-![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)
-![Render](https://img.shields.io/badge/Deployed-Render-46E3B7?logo=render)
+## Features
 
-</div>
+- Local authentication with signup, login, and logout
+- Listing CRUD with owner-only edit and delete actions
+- Cloudinary image uploads with JPG, PNG, and WebP validation (5 MB limit)
+- Authenticated reviews with author-only deletion
+- Search across listing title, location, and country
+- Server-side Joi validation, Helmet security headers, secure sessions, and Mongo-backed session storage
+- Docker Compose setup with an isolated local MongoDB service
 
----
+## Stack
 
-## 🔗 Live Demo
+- Node.js 20, Express 4, EJS, Bootstrap 5
+- MongoDB and Mongoose
+- Passport Local and passport-local-mongoose
+- Cloudinary, Multer, Joi, Helmet, connect-mongo
+- Docker and GitHub Actions
 
-👉 **[https://wanderlust-5yc4.onrender.com](https://wanderlust-5yc4.onrender.com)**
+## Run locally
 
----
-
-## 📸 Features
-
-- 🔐 **User Authentication** — Secure Signup, Login & Logout using Passport.js
-- 🏡 **Listings** — Create, Read, Update and Delete property listings
-- 📸 **Image Upload** — Cloud image storage via Cloudinary + Multer
-- ⭐ **Reviews System** — Rate and review listings (1 to 5 stars)
-- 🛡️ **Authorization** — Only owners can edit or delete their own listings and reviews
-- 🐳 **Docker Support** — Multi-stage Docker build + Docker Compose for easy setup
-- ⚡ **CI/CD Pipeline** — Automated testing and deployment via GitHub Actions
-- 🔒 **Security** — Helmet.js headers, Mongo sanitization, secure & httpOnly cookies
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB, Mongoose |
-| **Authentication** | Passport.js, passport-local-mongoose |
-| **Image Upload** | Cloudinary, Multer |
-| **Frontend** | EJS, EJS-Mate, Bootstrap 5 |
-| **Validation** | Joi |
-| **Security** | Helmet.js, express-mongo-sanitize |
-| **Session** | express-session, connect-mongo |
-| **DevOps** | Docker, GitHub Actions, Render |
-
----
-
-## 🗂️ Project Structure
-
-```
-wanderLust/
-├── .github/
-│   └── workflows/
-│       └── ci.yml          # GitHub Actions CI/CD pipeline
-├── controllers/             # Business logic — separated from routes
-│   ├── listings.js          # Listing CRUD logic
-│   ├── reviews.js           # Review create & delete logic
-│   └── users.js             # Signup, login, logout logic
-├── models/                  # Mongoose schemas
-│   ├── listing.js           # Listing model with indexes
-│   ├── review.js            # Review model
-│   └── user.js              # User model with passport plugin
-├── routes/                  # Express route definitions
-│   ├── listings.js          # /listings routes
-│   ├── review.js            # /listings/:id/reviews routes
-│   └── user.js              # /signup /login /logout routes
-├── views/                   # EJS templates
-│   ├── listings/            # index, show, new, edit pages
-│   └── includes/            # navbar, footer, flash partials
-├── public/                  # Static assets (CSS, JS)
-├── utils/                   # Helper utilities
-│   ├── expressError.js      # Custom error class
-│   └── wrapAsync.js         # Async error wrapper
-├── middleware.js             # isLoggedIn, isOwner, validate middlewares
-├── schema.js                 # Joi validation schemas
-├── cloudConfig.js            # Cloudinary configuration
-├── app.js                    # Application entry point
-├── Dockerfile                # Multi-stage Docker build
-├── docker-compose.yml        # Local development setup
-└── .env.example              # Environment variables template
-```
-
----
-
-## 🚀 Local Setup
-
-### Prerequisites
-
-- Node.js v20+
-- MongoDB (local or Atlas)
-- Cloudinary account (free tier works)
-
-### Steps
+Requirements: Node.js 20+, npm, a MongoDB instance (Atlas or local), and Cloudinary credentials if image uploads are needed.
 
 ```bash
-# 1. Repository clone karo
 git clone https://github.com/navniit27/wanderLust.git
 cd wanderLust
-
-# 2. Dependencies install karo
-npm install --legacy-peer-deps
-
-# 3. Environment variables set karo
+npm ci
 cp .env.example .env
-# Ab .env file kholo aur apni values bharo
-
-# 4. Development server start karo
 npm run dev
-
-# Ya production mode mein
-npm start
 ```
 
-Open your browser: [http://localhost:8080](http://localhost:8080)
+Open [http://localhost:8080/listings](http://localhost:8080/listings).
 
----
+Set either `ATLASDB_URL` or `MONGO_URL` in `.env`. `ATLASDB_URL` takes precedence when both values are present.
 
-## 🐳 Docker se Run Karo
+## Environment variables
+
+Copy `.env.example` to `.env`; never commit the real `.env` file.
+
+```dotenv
+NODE_ENV=development
+PORT=8080
+ATLASDB_URL=mongodb+srv://username:password@cluster.mongodb.net/wanderlust
+SECRET=replace-with-a-long-random-session-secret
+CLOUD_NAME=your-cloudinary-cloud-name
+CLOUD_API_KEY=your-cloudinary-api-key
+CLOUD_API_SECRET=your-cloudinary-api-secret
+```
+
+For a standalone local MongoDB server, replace `ATLASDB_URL` with:
+
+```dotenv
+MONGO_URL=mongodb://127.0.0.1:27017/wanderlust
+```
+
+## Docker
+
+Docker Compose starts the application and an internal MongoDB container. It deliberately binds only the application port to localhost; MongoDB is not exposed to the host.
 
 ```bash
-# Build karke start karo (pehli baar)
+cp .env.example .env
+# Set SECRET and (optionally) Cloudinary credentials in .env
 docker compose up --build
+```
 
-# Background mein chalao
+Visit [http://localhost:8080/listings](http://localhost:8080/listings). Compose forces the app to use its `mongo` service even if your `.env` contains an Atlas URL.
+
+Useful commands:
+
+```bash
 docker compose up -d
-
-# Logs dekho
-docker compose logs -f
-
-# Band karo
+docker compose logs -f app
 docker compose down
+docker compose down -v # also removes the local MongoDB volume
 ```
 
----
+## CI/CD
 
-## 🔁 CI/CD Pipeline
+The GitHub Actions workflow runs on pull requests and pushes to `main`:
 
-Har `master` branch push pe GitHub Actions automatically yeh karta hai:
+1. Installs dependencies with `npm ci`.
+2. Checks syntax for every project JavaScript file outside `node_modules`.
+3. Runs `npm audit` for high-severity vulnerabilities (reported without blocking the pipeline).
+4. Builds and inspects the production Docker image.
 
+On pushes to `main`, a final job triggers a Render deployment when the repository secret `RENDER_DEPLOY_HOOK_URL` is configured. Pull requests never deploy.
+
+## Routes
+
+- `GET /listings` — browse and search listings
+- `GET /listings/new`, `POST /listings` — create a listing (authenticated)
+- `GET /listings/:id`, `GET /listings/:id/edit`, `PUT /listings/:id`, `DELETE /listings/:id` — listing detail and CRUD
+- `POST /listings/:id/reviews`, `DELETE /listings/:id/reviews/:reviewId` — review actions
+- `GET|POST /signup`, `GET|POST /login`, `POST /logout` — authentication
+
+## Project layout
+
+```text
+controllers/  Request handlers
+models/       Mongoose schemas and indexes
+routes/       Express routes
+views/        EJS pages and shared components
+public/       CSS and client-side JavaScript
+middleware.js Authentication, authorization, and validation
+schema.js     Joi request schemas
 ```
-Push to master
-      │
-      ▼
-┌──────────────────────┐
-│  🔍 Lint & Validate  │  ← Saari JS files syntax check + npm audit
-└──────────┬───────────┘
-           │ pass hone pe
-           ▼
-┌──────────────────────┐
-│  🐳 Docker Build     │  ← Docker image build test hoti hai CI mein
-└──────────┬───────────┘
-           │ pass hone pe
-           ▼
-┌──────────────────────┐
-│  🚀 Deploy to Render │  ← Auto deploy, response code bhi verify hota hai
-└──────────────────────┘
-```
 
-> **Note:** Pull Request pe sirf Lint + Docker Build hota hai — Deploy nahi hota.
+## Author
 
----
-
-## 🔐 Environment Variables
-
-`.env.example` file copy karke `.env` banao aur yeh values bharo:
-
-| Variable | Description |
-|---|---|
-| `NODE_ENV` | `development` ya `production` |
-| `PORT` | Server port (default: 8080) |
-| `SECRET` | Session secret key |
-| `ATLASDB_URL` | MongoDB Atlas connection string |
-| `CLOUD_NAME` | Cloudinary cloud name |
-| `CLOUD_API_KEY` | Cloudinary API key |
-| `CLOUD_API_SECRET` | Cloudinary API secret |
-
----
-
-## 📡 API Routes
-
-### Listings
-
-| Method | Route | Description |
-|---|---|---|
-| GET | `/listings` | Saari listings dekho |
-| POST | `/listings` | Nayi listing banao |
-| GET | `/listings/new` | New listing form |
-| GET | `/listings/:id` | Ek listing dekho |
-| PUT | `/listings/:id` | Listing update karo |
-| DELETE | `/listings/:id` | Listing delete karo |
-| GET | `/listings/:id/edit` | Edit form |
-
-### Reviews
-
-| Method | Route | Description |
-|---|---|---|
-| POST | `/listings/:id/reviews` | Review add karo |
-| DELETE | `/listings/:id/reviews/:reviewId` | Review delete karo |
-
-### Users
-
-| Method | Route | Description |
-|---|---|---|
-| GET/POST | `/signup` | Register |
-| GET/POST | `/login` | Login |
-| GET | `/logout` | Logout |
-
----
-
-## 👤 Author
-
-**Navneet** — [@navniit27](https://github.com/navniit27)
-
----
-
-<div align="center">
-Made with ❤️ using Node.js · Express · MongoDB · Docker
-</div>
+Navneet — [@navniit27](https://github.com/navniit27)

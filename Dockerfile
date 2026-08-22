@@ -1,26 +1,24 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS dependencies
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --only=production --legacy-peer-deps
+RUN npm ci --omit=dev
 
 FROM node:20-alpine AS production
 
-WORKDIR /app
-
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-COPY --from=builder /app/node_modules ./node_modules
+WORKDIR /app
 
-COPY . .
+ENV NODE_ENV=production
 
-RUN chown -R appuser:appgroup /app
+COPY --from=dependencies --chown=appuser:appgroup /app/node_modules ./node_modules
+COPY --chown=appuser:appgroup . .
 
 USER appuser
 
 EXPOSE 8080
 
-ENV NODE_ENV=production
 CMD ["node", "app.js"]

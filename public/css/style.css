@@ -19,6 +19,26 @@ body{
 .nav-link{
     color: #222222 !important;
 }
+.btn.search-btn {
+    padding: 0 1rem;
+    color: #fff;
+    background-color: #fe424d;
+    border-color: #fe424d;
+    border-radius: 25px;
+}
+.btn.search-btn:hover {
+    color: #fff;
+    background-color: #fe424d;
+    border-color: #fe424d;
+}
+.btn.search-btn i {
+    display: inline;
+}
+.form-control.search-inp {
+    padding: 0.5rem 3rem;
+    font-size: 0.9rem;
+    border-radius: 25px;
+}
 
 /* footer */
 
@@ -73,6 +93,39 @@ body{
 }
 .listing-link{
     text-decoration: none;
+}
+.listing-card-image {
+    height: 20rem;
+}
+.listing-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.filter {
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+}
+.filter:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+.filter p {
+    font-size: 0.8rem;
+}
+.tax-info {
+    display: none;
+}
+.tax-toggle {
+    display: flex;
+    align-items: center;
+    height: 3rem;
+    margin-left: 2rem;
+    padding: 0.8rem;
+    border: 1px solid black;
+    border-radius: 1rem;
 }
 /* card effect */
 .card-img-overlay{

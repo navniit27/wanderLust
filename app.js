@@ -29,7 +29,7 @@ const User = require("./models/user");
 
 const PORT = process.env.PORT || 8080;
 
-const MONGO_URL = process.env.ATLASDB_URL;
+const MONGO_URL = process.env.ATLASDB_URL || process.env.MONGO_URL;
 
 const SESSION_SECRET = process.env.SECRET;
 
@@ -39,7 +39,7 @@ const SESSION_SECRET = process.env.SECRET;
 // ==========================================
 
 if (!MONGO_URL) {
-    console.error("❌ ATLASDB_URL is missing in .env");
+    console.error("❌ Set ATLASDB_URL or MONGO_URL in .env");
     process.exit(1);
 }
 
