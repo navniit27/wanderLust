@@ -36,7 +36,7 @@ const SESSION_SECRET = process.env.SECRET;
 
 
 // ==========================================
-// REQUIRED ENV CHECK
+// REQUIRED ENVIRONMENT VARIABLES
 // ==========================================
 
 if (!MONGO_URL) {
@@ -51,21 +51,45 @@ if (!SESSION_SECRET) {
 
 
 // ==========================================
-// VIEW ENGINE
+// EXPRESS CONFIGURATION
 // ==========================================
 
-app.engine("ejs", ejsMate);
-
-app.set("view engine", "ejs");
+app.set(
+    "view engine",
+    "ejs"
+);
 
 app.set(
     "views",
     path.join(__dirname, "views")
 );
 
+app.engine(
+    "ejs",
+    ejsMate
+);
+
 
 // ==========================================
-// BASIC MIDDLEWARE
+// PRODUCTION PROXY
+// ==========================================
+
+if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+}
+
+
+// ==========================================
+// SECURITY HEADERS
+// ==========================================
+
+app.use(
+    helmet()
+);
+
+
+// ==========================================
+// REQUEST BODY PARSING
 // ==========================================
 
 app.use(
@@ -81,47 +105,71 @@ app.use(
     })
 );
 
-app.use(methodOverride("_method"));
+
+// ==========================================
+// METHOD OVERRIDE
+// ==========================================
+
+app.use(
+    methodOverride("_method")
+);
+
+
+// ==========================================
+// STATIC FILES
+// ==========================================
 
 app.use(
     express.static(
-        path.join(__dirname, "public")
+        path.join(
+            __dirname,
+            "public"
+        ),
+        {
+            maxAge:
+                process.env.NODE_ENV === "production"
+                    ? "7d"
+                    : 0,
+        }
     )
 );
 
-app.use(compression());
-
 
 // ==========================================
-// SECURITY
+// COMPRESSION
 // ==========================================
 
 app.use(
-    helmet({
-        crossOriginResourcePolicy: {
-            policy: "cross-origin",
-        },
-    })
+    compression()
 );
 
 
 // ==========================================
-// DATABASE
+// DATABASE CONNECTION
 // ==========================================
 
-mongoose
-    .connect(MONGO_URL)
-    .then(() => {
-        console.log("✅ Connected to MongoDB");
-    })
-    .catch((error) => {
+async function connectDB() {
+
+    try {
+
+        await mongoose.connect(
+            MONGO_URL
+        );
+
+        console.log(
+            "✅ Connected to MongoDB"
+        );
+
+    } catch (error) {
+
         console.error(
             "❌ MongoDB connection failed:",
             error.message
         );
 
         process.exit(1);
-    });
+    }
+}
 
 
 // ==========================================
@@ -131,15 +179,22 @@ mongoose
 const store = MongoStore.create({
     mongoUrl: MONGO_URL,
 
-    touchAfter: 24 * 60 * 60,
+    touchAfter:
+        24 * 60 * 60,
 });
 
-store.on("error", (error) => {
-    console.error(
-        "❌ Session store error:",
-        error
-    );
-});
+
+store.on(
+    "error",
+    (error) => {
+
+        console.error(
+            "❌ Session store error:",
+            error.message
+        );
+
+    }
+);
 
 
 // ==========================================
@@ -148,15 +203,18 @@ store.on("error", (error) => {
 
 app.use(
     session({
-        store: store,
 
-        secret: SESSION_SECRET,
+        store,
+
+        secret:
+            SESSION_SECRET,
 
         resave: false,
 
         saveUninitialized: false,
 
         cookie: {
+
             maxAge:
                 7 *
                 24 *
@@ -172,6 +230,7 @@ app.use(
                 process.env.NODE_ENV ===
                 "production",
         },
+
     })
 );
 
@@ -180,7 +239,9 @@ app.use(
 // FLASH
 // ==========================================
 
-app.use(flash());
+app.use(
+    flash()
+);
 
 
 // ==========================================
@@ -206,9 +267,11 @@ passport.use(
     )
 );
 
+
 passport.serializeUser(
     User.serializeUser()
 );
+
 
 passport.deserializeUser(
     User.deserializeUser()
@@ -219,19 +282,25 @@ passport.deserializeUser(
 // GLOBAL LOCALS
 // ==========================================
 
-app.use((req, res, next) => {
+app.use(
+    (req, res, next) => {
 
-    res.locals.success =
-        req.flash("success");
+        res.locals.success =
+            req.flash(
+                "success"
+            );
 
-    res.locals.error =
-        req.flash("error");
+        res.locals.error =
+            req.flash(
+                "error"
+            );
 
-    res.locals.currUser =
-        req.user;
+        res.locals.currUser =
+            req.user;
 
-    next();
-});
+        next();
+    }
+);
 
 
 // ==========================================
@@ -279,28 +348,37 @@ app.use(
 
 
 // ==========================================
-// HOME
+// HOME ROUTE
 // ==========================================
 
-app.get("/", (req, res) => {
-    res.redirect("/listings");
-});
+app.get(
+    "/",
+    (req, res) => {
+
+        res.redirect(
+            "/listings"
+        );
+
+    }
+);
 
 
 // ==========================================
 // 404 HANDLER
 // ==========================================
 
-app.use((req, res, next) => {
+app.use(
+    (req, res, next) => {
 
-    next(
-        new ExpressError(
-            404,
-            "Page not found!"
-        )
-    );
+        next(
+            new ExpressError(
+                404,
+                "Page not found!"
+            )
+        );
 
-});
+    }
+);
 
 
 // ==========================================
@@ -308,25 +386,40 @@ app.use((req, res, next) => {
 // ==========================================
 
 app.use(
-    (err, req, res, next) => {
+    (
+        err,
+        req,
+        res,
+        next
+    ) => {
 
         console.error(
             "❌ Error:",
             err
         );
 
-        if (res.headersSent) {
+
+        if (
+            res.headersSent
+        ) {
             return next(err);
         }
 
+
         const statusCode =
-            err.statusCode || 500;
+            err.statusCode ||
+            500;
+
 
         const message =
             err.message ||
             "Something went wrong!";
 
-        res.status(statusCode);
+
+        res.status(
+            statusCode
+        );
+
 
         res.render(
             "error.ejs",
@@ -337,21 +430,30 @@ app.use(
                 },
             }
         );
+
     }
 );
 
 
 // ==========================================
-// START SERVER
+// START APPLICATION
 // ==========================================
 
-app.listen(
-    PORT,
-    () => {
+async function startServer() {
 
-        console.log(
-            `🚀 Server is running on port ${PORT}`
-        );
+    await connectDB();
 
-    }
-);
+    app.listen(
+        PORT,
+        () => {
+
+            console.log(
+                `🚀 Server is running on port ${PORT}`
+            );
+
+        }
+    );
+}
+
+
+startServer();

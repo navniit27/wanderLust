@@ -9,16 +9,22 @@ const { Schema } = mongoose;
 
 const listingSchema = new Schema(
     {
-        // ============================
+        // ======================================
         // BASIC LISTING INFORMATION
-        // ============================
+        // ======================================
 
         title: {
             type: String,
             required: [true, "Title is required."],
             trim: true,
-            minlength: [3, "Title must be at least 3 characters."],
-            maxlength: [100, "Title cannot exceed 100 characters."],
+            minlength: [
+                3,
+                "Title must be at least 3 characters.",
+            ],
+            maxlength: [
+                100,
+                "Title cannot exceed 100 characters.",
+            ],
         },
 
         description: {
@@ -38,7 +44,10 @@ const listingSchema = new Schema(
         price: {
             type: Number,
             required: [true, "Price is required."],
-            min: [0, "Price cannot be negative."],
+            min: [
+                0,
+                "Price cannot be negative.",
+            ],
             max: [
                 10000000,
                 "Price cannot exceed ₹1 crore.",
@@ -74,42 +83,48 @@ const listingSchema = new Schema(
         },
 
 
-        // ============================
+        // ======================================
         // LISTING IMAGE
-        // ============================
+        // ======================================
 
         image: {
             url: {
                 type: String,
+
                 default:
                     "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
             },
 
             filename: {
                 type: String,
-                default: "default_image",
+
+                default:
+                    "default_image",
             },
         },
 
 
-        // ============================
+        // ======================================
         // OWNER
-        // ============================
+        // ======================================
 
         owner: {
             type: Schema.Types.ObjectId,
+
             ref: "User",
+
             required: true,
         },
 
 
-        // ============================
+        // ======================================
         // REVIEWS
-        // ============================
+        // ======================================
 
         reviews: [
             {
                 type: Schema.Types.ObjectId,
+
                 ref: "Review",
             },
         ],
@@ -122,10 +137,13 @@ const listingSchema = new Schema(
 
 
 // ==========================================
-// INDEXES
+// DATABASE INDEXES
 // ==========================================
 
-// Search performance improve karne ke liye
+// Text index for future full-text search.
+// Current search controller can continue
+// using its existing working search logic.
+
 listingSchema.index({
     title: "text",
     location: "text",
@@ -133,13 +151,21 @@ listingSchema.index({
 });
 
 
+// Useful for newest-listings-first queries.
+
+listingSchema.index({
+    createdAt: -1,
+});
+
+
 // ==========================================
-// EXPORT MODEL
+// MODEL
 // ==========================================
 
 const Listing = mongoose.model(
     "Listing",
     listingSchema
 );
+
 
 module.exports = Listing;
