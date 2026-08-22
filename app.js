@@ -15,7 +15,6 @@ const { MongoStore } = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-
 const helmet = require("helmet");
 const compression = require("compression");
 
@@ -177,6 +176,7 @@ async function connectDB() {
 // ==========================================
 
 const store = MongoStore.create({
+
     mongoUrl: MONGO_URL,
 
     touchAfter:
@@ -267,11 +267,9 @@ passport.use(
     )
 );
 
-
 passport.serializeUser(
     User.serializeUser()
 );
-
 
 passport.deserializeUser(
     User.deserializeUser()
@@ -358,7 +356,6 @@ app.get(
         res.redirect(
             "/listings"
         );
-
     }
 );
 
@@ -450,7 +447,6 @@ async function startServer() {
             console.log(
                 `🚀 Server is running on port ${PORT}`
             );
-
         }
     );
 }
