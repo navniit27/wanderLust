@@ -1,129 +1,357 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-};
-
-const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first"); 
+require("dotenv").config();
 
 const express = require("express");
 const app = express();
+
 const mongoose = require("mongoose");
 const path = require("path");
+
 const methodOverride = require("method-override");
-const morgan = require("morgan");
 const ejsMate = require("ejs-mate");
-const ExpressError = require("./utils/expressError.js");
+
 const session = require("express-session");
-const connectMongo = require("connect-mongo"); // Clean and safe require
+const { MongoStore } = require("connect-mongo");
+
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const User = require("./models/user.js");
 
-const listingRouter = require("./routes/listings.js");
-const reviewRouter = require("./routes/review.js");
-const userRouter = require("./routes/user.js");
+const helmet = require("helmet");
+const compression = require("compression");
 
-const dbUrl = process.env.MONGO_URL || process.env.ATLASDB_URL;
+const ExpressError = require("./utils/ExpressError");
 
-async function connectDB() {
-  try {
-    await mongoose.connect(dbUrl, {
-      family: 4,
-      serverSelectionTimeoutMS: 30000,
-    });
-    console.log("✅ Connected to MongoDB");
-  } catch (err) {
-    console.error("❌ MongoDB connection failed:", err.message);
-    process.exit(1); 
-  }
-}              
-connectDB();
+const User = require("./models/user");
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.engine("ejs", ejsMate);
 
-app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, "/public")));
-
-const ActualMongoStore = connectMongo.MongoStore || connectMongo.default || connectMongo;
-
-let store;
-if (typeof ActualMongoStore.create === "function") {
-  // Agar Render modern version (v4/v5/v6) uthata hai
-  store = ActualMongoStore.create({
-    mongoUrl: dbUrl,
-    crypto: {
-      secret: process.env.SECRET,
-    },
-    touchAfter: 24 * 3600, 
-  });
-} else {
-
-  const LegacyStore = typeof connectMongo === "function" ? connectMongo(session) : ActualMongoStore(session);
-  store = new LegacyStore({
-    url: dbUrl,
-    secret: process.env.SECRET,
-    touchAfter: 24 * 3600,
-  });
-}
-
-store.on("error", (err) => {
-  console.error("❌ Session Store Error:", err);
-});
-
-const sessionOptions = {
-  store,                        
-  secret: process.env.SECRET || "mysupersecretstring",
-  resave: true,        
-  saveUninitialized: true, 
-  cookie: {
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: false,    
-    sameSite: "lax",   
-  },
-};
-
-app.use(session(sessionOptions));
-app.use(flash());
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
-  next();
-});
-
-app.get("/", (req, res) => res.redirect("/listings"));
-app.use("/listings", listingRouter);
-app.use("/listings/:id/reviews", reviewRouter);
-app.use("/", userRouter);
-
-app.use((req, res, next) => {
-  next(new ExpressError(404, "Page Not Found"));
-});
-
-app.use((err, req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-  const { statusCode = 500, message = "Something went wrong!" } = err;
-  res.status(statusCode).render("error.ejs", { message, statusCode });
-});
+// ==========================================
+// ENVIRONMENT
+// ==========================================
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+
+const MONGO_URL = process.env.ATLASDB_URL;
+
+const SESSION_SECRET = process.env.SECRET;
+
+
+// ==========================================
+// REQUIRED ENV CHECK
+// ==========================================
+
+if (!MONGO_URL) {
+    console.error("❌ ATLASDB_URL is missing in .env");
+    process.exit(1);
+}
+
+if (!SESSION_SECRET) {
+    console.error("❌ SECRET is missing in .env");
+    process.exit(1);
+}
+
+
+// ==========================================
+// VIEW ENGINE
+// ==========================================
+
+app.engine("ejs", ejsMate);
+
+app.set("view engine", "ejs");
+
+app.set(
+    "views",
+    path.join(__dirname, "views")
+);
+
+
+// ==========================================
+// BASIC MIDDLEWARE
+// ==========================================
+
+app.use(
+    express.urlencoded({
+        extended: true,
+        limit: "10kb",
+    })
+);
+
+app.use(
+    express.json({
+        limit: "10kb",
+    })
+);
+
+app.use(methodOverride("_method"));
+
+app.use(
+    express.static(
+        path.join(__dirname, "public")
+    )
+);
+
+app.use(compression());
+
+
+// ==========================================
+// SECURITY
+// ==========================================
+
+app.use(
+    helmet({
+        crossOriginResourcePolicy: {
+            policy: "cross-origin",
+        },
+    })
+);
+
+
+// ==========================================
+// DATABASE
+// ==========================================
+
+mongoose
+    .connect(MONGO_URL)
+    .then(() => {
+        console.log("✅ Connected to MongoDB");
+    })
+    .catch((error) => {
+        console.error(
+            "❌ MongoDB connection failed:",
+            error.message
+        );
+
+        process.exit(1);
+    });
+
+
+// ==========================================
+// SESSION STORE
+// ==========================================
+
+const store = MongoStore.create({
+    mongoUrl: MONGO_URL,
+
+    touchAfter: 24 * 60 * 60,
 });
+
+store.on("error", (error) => {
+    console.error(
+        "❌ Session store error:",
+        error
+    );
+});
+
+
+// ==========================================
+// SESSION
+// ==========================================
+
+app.use(
+    session({
+        store: store,
+
+        secret: SESSION_SECRET,
+
+        resave: false,
+
+        saveUninitialized: false,
+
+        cookie: {
+            maxAge:
+                7 *
+                24 *
+                60 *
+                60 *
+                1000,
+
+            httpOnly: true,
+
+            sameSite: "lax",
+
+            secure:
+                process.env.NODE_ENV ===
+                "production",
+        },
+    })
+);
+
+
+// ==========================================
+// FLASH
+// ==========================================
+
+app.use(flash());
+
+
+// ==========================================
+// PASSPORT
+// ==========================================
+
+app.use(
+    passport.initialize()
+);
+
+app.use(
+    passport.session()
+);
+
+
+// ==========================================
+// PASSPORT CONFIGURATION
+// ==========================================
+
+passport.use(
+    new LocalStrategy(
+        User.authenticate()
+    )
+);
+
+passport.serializeUser(
+    User.serializeUser()
+);
+
+passport.deserializeUser(
+    User.deserializeUser()
+);
+
+
+// ==========================================
+// GLOBAL LOCALS
+// ==========================================
+
+app.use((req, res, next) => {
+
+    res.locals.success =
+        req.flash("success");
+
+    res.locals.error =
+        req.flash("error");
+
+    res.locals.currUser =
+        req.user;
+
+    next();
+});
+
+
+// ==========================================
+// ROUTES
+// ==========================================
+
+const listingRouter =
+    require("./routes/listings");
+
+const reviewRouter =
+    require("./routes/review");
+
+const userRouter =
+    require("./routes/user");
+
+
+// ==========================================
+// LISTINGS
+// ==========================================
+
+app.use(
+    "/listings",
+    listingRouter
+);
+
+
+// ==========================================
+// REVIEWS
+// ==========================================
+
+app.use(
+    "/listings/:id/reviews",
+    reviewRouter
+);
+
+
+// ==========================================
+// USERS
+// ==========================================
+
+app.use(
+    "/",
+    userRouter
+);
+
+
+// ==========================================
+// HOME
+// ==========================================
+
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
+
+
+// ==========================================
+// 404 HANDLER
+// ==========================================
+
+app.use((req, res, next) => {
+
+    next(
+        new ExpressError(
+            404,
+            "Page not found!"
+        )
+    );
+
+});
+
+
+// ==========================================
+// GLOBAL ERROR HANDLER
+// ==========================================
+
+app.use(
+    (err, req, res, next) => {
+
+        console.error(
+            "❌ Error:",
+            err
+        );
+
+        if (res.headersSent) {
+            return next(err);
+        }
+
+        const statusCode =
+            err.statusCode || 500;
+
+        const message =
+            err.message ||
+            "Something went wrong!";
+
+        res.status(statusCode);
+
+        res.render(
+            "error.ejs",
+            {
+                err: {
+                    statusCode,
+                    message,
+                },
+            }
+        );
+    }
+);
+
+
+// ==========================================
+// START SERVER
+// ==========================================
+
+app.listen(
+    PORT,
+    () => {
+
+        console.log(
+            `🚀 Server is running on port ${PORT}`
+        );
+
+    }
+);

@@ -1,20 +1,48 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const passportLocalMongoose = require("passport-local-mongoose").default;
+const passportLocalMongoose = require("passport-local-mongoose");
+
+const { Schema } = mongoose;
+
+
+// ==========================================
+// USER SCHEMA
+// ==========================================
 
 const userSchema = new Schema(
     {
         email: {
             type: String,
-            required: [true, "Email is required"],  
-            unique: true,                            
-            lowercase: true,                         
-            trim: true,                              
+            required: [true, "Email is required."],
+            unique: true,
+            lowercase: true,
+            trim: true,
         },
     },
-    { timestamps: true }  
+    {
+        timestamps: true,
+    }
 );
 
-userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model("User", userSchema);
+// ==========================================
+// PASSPORT LOCAL MONGOOSE
+// ==========================================
+
+// Some versions export the plugin directly,
+// while others expose it through `.default`.
+
+const passportPlugin =
+    typeof passportLocalMongoose === "function"
+        ? passportLocalMongoose
+        : passportLocalMongoose.default;
+
+userSchema.plugin(passportPlugin);
+
+
+// ==========================================
+// USER MODEL
+// ==========================================
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

@@ -1,32 +1,72 @@
-const Review = require("../models/review.js");
-const Listing = require("../models/listing.js");
+const Listing = require("../models/listing");
+const Review = require("../models/review");
+
+
+// ==========================================
+// CREATE REVIEW
+// ==========================================
 
 module.exports.createReview = async (req, res) => {
-    const listing = await Listing.findById(req.params.id);
+    const { id } = req.params;
+
+    // Listing find karo
+    const listing = await Listing.findById(id);
 
     if (!listing) {
         req.flash("error", "Listing not found!");
         return res.redirect("/listings");
     }
 
-    const newReview = new Review(req.body.review);
-    newReview.author = req.user._id;
-    listing.reviews.push(newReview);
+    // New review create karo
+    const review = new Review(req.body.review);
 
-    await Promise.all([newReview.save(), listing.save()]);
+    // Logged-in user ko author banao
+    review.author = req.user._id;
 
-    req.flash("success", "New Review Created!");
-    res.redirect(`/listings/${listing._id}`);
+    // Listing ke reviews array mein review add karo
+    listing.reviews.push(review._id);
+
+    // Dono save karo
+    await review.save();
+    await listing.save();
+
+    req.flash("success", "New review added!");
+
+    res.redirect(`/listings/${id}`);
 };
+
+
+// ==========================================
+// DELETE REVIEW
+// ==========================================
 
 module.exports.deleteReview = async (req, res) => {
     const { id, reviewId } = req.params;
 
-    await Promise.all([
-        Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }),
-        Review.findByIdAndDelete(reviewId),
-    ]);
+    // Listing find karo
+    const listing = await Listing.findById(id);
 
-    req.flash("success", "Review Deleted!");
+    if (!listing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
+
+    // Review delete karo
+    const deletedReview = await Review.findByIdAndDelete(reviewId);
+
+    if (!deletedReview) {
+        req.flash("error", "Review not found!");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    // Listing ke reviews array se review ID remove karo
+    await Listing.findByIdAndUpdate(id, {
+        $pull: {
+            reviews: reviewId,
+        },
+    });
+
+    req.flash("success", "Review deleted!");
+
     res.redirect(`/listings/${id}`);
 };
