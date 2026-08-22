@@ -83,7 +83,18 @@ if (process.env.NODE_ENV === "production") {
 // ==========================================
 
 app.use(
-    helmet()
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                "img-src": [
+                    "'self'",
+                    "data:",
+                    "https://res.cloudinary.com",
+                    "https://images.unsplash.com"
+                ]
+            }
+        }
+    })
 );
 
 

@@ -52,10 +52,17 @@
  
 
 <div class="tax-toggle">
-  <div class="form-check-reverse form-switch">
-  <input class="form-check-input" type="checkbox" role="switch" id="tax-toggle">
-  <label class="form-check-label" for="tax-toggle">Display total after taxes</label>
-</div>
+  <label class="form-check-label" for="tax-toggle">
+            Display total after taxes
+  </label>
+      <div class="form-check form-switch">
+        <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="tax-toggle"
+        >
+    </div>
 </div>
   
 </div>
@@ -71,8 +78,10 @@
        <b>
          <%= listing.title %>
        </b> <br>
-        &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
-        <i class="tax-info">&nbsp; &nbsp; +18% GST</i>
+        <span class="price-line">
+    &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+    <i class="tax-info">· +18% GST</i>
+        </span>
     </p>
   </div>
 </div>
