@@ -21,24 +21,23 @@ module.exports.index = async (req, res) => {
                 {
                     title: {
                         $regex: searchTerm,
-                        $options: "i"
-                    }
+                        $options: "i",
+                    },
                 },
                 {
                     location: {
                         $regex: searchTerm,
-                        $options: "i"
-                    }
+                        $options: "i",
+                    },
                 },
                 {
                     country: {
                         $regex: searchTerm,
-                        $options: "i"
-                    }
-                }
-            ]
+                        $options: "i",
+                    },
+                },
+            ],
         };
-
     }
 
     const allListings = await Listing.find(filter)
@@ -49,7 +48,7 @@ module.exports.index = async (req, res) => {
         "listings/index.ejs",
         {
             allListings,
-            search: search || ""
+            search: search || "",
         }
     );
 };
@@ -69,6 +68,7 @@ module.exports.renderNewForm = (req, res) => {
 // ==========================================
 
 module.exports.showListing = async (req, res) => {
+
     const { id } = req.params;
 
     const listing = await Listing.findById(id)
@@ -81,6 +81,7 @@ module.exports.showListing = async (req, res) => {
         .populate("owner");
 
     if (!listing) {
+
         req.flash(
             "error",
             "Listing not found!"
@@ -103,14 +104,15 @@ module.exports.showListing = async (req, res) => {
 // ==========================================
 
 module.exports.createPost = async (req, res) => {
-    const listingData = req.body.listing;
 
-    const listing = new Listing(
-        listingData
-    );
+    const listingData =
+        req.body.listing;
 
-    // Logged-in user becomes owner
-    listing.owner = req.user._id;
+    const listing =
+        new Listing(listingData);
+
+    listing.owner =
+        req.user._id;
 
 
     // ======================================
@@ -118,12 +120,12 @@ module.exports.createPost = async (req, res) => {
     // ======================================
 
     if (req.file) {
+
         listing.image = {
             url: req.file.path,
             filename: req.file.filename,
         };
     }
-
 
     await listing.save();
 
@@ -146,23 +148,39 @@ module.exports.renderEditForm = async (
     req,
     res
 ) => {
+
     const { id } = req.params;
 
-    const listing = await Listing.findById(id);
+    const listing =
+        await Listing.findById(id);
 
     if (!listing) {
+
         req.flash(
             "error",
             "Listing not found!"
         );
 
-        return res.redirect("/listings");
+        return res.redirect(
+            "/listings"
+        );
     }
+
+
+    // ======================================
+    // ORIGINAL IMAGE URL
+    // ======================================
+
+    const originalImageUrl =
+        listing.image?.url ||
+        "/images/default.jpg";
+
 
     res.render(
         "listings/edit.ejs",
         {
             listing,
+            originalImageUrl,
         }
     );
 };
@@ -176,18 +194,22 @@ module.exports.updateListing = async (
     req,
     res
 ) => {
+
     const { id } = req.params;
 
     const listing =
         await Listing.findById(id);
 
     if (!listing) {
+
         req.flash(
             "error",
             "Listing not found!"
         );
 
-        return res.redirect("/listings");
+        return res.redirect(
+            "/listings"
+        );
     }
 
 
@@ -206,6 +228,7 @@ module.exports.updateListing = async (
     // ======================================
 
     if (req.file) {
+
         const oldImageFilename =
             listing.image?.filename;
 
@@ -215,13 +238,17 @@ module.exports.updateListing = async (
         };
 
 
-        // Delete old Cloudinary image
+        // ==================================
+        // DELETE OLD CLOUDINARY IMAGE
+        // ==================================
+
         if (
             oldImageFilename &&
-            oldImageFilename !==
-                "default_image"
+            oldImageFilename !== "default_image"
         ) {
+
             try {
+
                 await cloudinary.uploader.destroy(
                     oldImageFilename,
                     {
@@ -233,7 +260,9 @@ module.exports.updateListing = async (
                 console.log(
                     `Deleted old Cloudinary image: ${oldImageFilename}`
                 );
+
             } catch (error) {
+
                 console.error(
                     "Old Cloudinary image deletion failed:",
                     error.message
@@ -264,18 +293,22 @@ module.exports.deleteListing = async (
     req,
     res
 ) => {
+
     const { id } = req.params;
 
     const listing =
         await Listing.findById(id);
 
     if (!listing) {
+
         req.flash(
             "error",
             "Listing not found!"
         );
 
-        return res.redirect("/listings");
+        return res.redirect(
+            "/listings"
+        );
     }
 
 
@@ -290,7 +323,9 @@ module.exports.deleteListing = async (
         imageFilename &&
         imageFilename !== "default_image"
     ) {
+
         try {
+
             await cloudinary.uploader.destroy(
                 imageFilename,
                 {
@@ -302,7 +337,9 @@ module.exports.deleteListing = async (
             console.log(
                 `Deleted Cloudinary image: ${imageFilename}`
             );
+
         } catch (error) {
+
             console.error(
                 "Cloudinary image deletion failed:",
                 error.message
@@ -322,5 +359,7 @@ module.exports.deleteListing = async (
         "Listing deleted successfully!"
     );
 
-    res.redirect("/listings");
+    res.redirect(
+        "/listings"
+    );
 };

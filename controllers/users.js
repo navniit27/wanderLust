@@ -6,55 +6,38 @@ const User = require("../models/user");
 // ==========================================
 
 module.exports.renderSignupForm = (req, res) => {
-    res.render("users/signup.ejs");
+    res.render("listings/users/signup.ejs");
 };
 
 
 // ==========================================
-// SIGNUP
+// SIGNUP USER
 // ==========================================
 
 module.exports.signup = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body;
+        const {
+            username,
+            email,
+            password,
+        } = req.body;
 
-        // Basic validation
-        if (!username?.trim()) {
-            req.flash("error", "Username is required.");
-            return res.redirect("/signup");
-        }
-
-        if (!email?.trim()) {
-            req.flash("error", "Email is required.");
-            return res.redirect("/signup");
-        }
-
-        if (!password) {
-            req.flash("error", "Password is required.");
-            return res.redirect("/signup");
-        }
-
-        const normalizedEmail = email
-            .trim()
-            .toLowerCase();
-
-        // Create user using passport-local-mongoose
         const newUser = new User({
-            username: username.trim(),
-            email: normalizedEmail,
+            email,
+            username,
         });
 
-        const registeredUser = await User.register(
-            newUser,
-            password
-        );
+        const registeredUser =
+            await User.register(
+                newUser,
+                password
+            );
 
-        // Automatically log user in after signup
         req.login(
             registeredUser,
-            (loginError) => {
-                if (loginError) {
-                    return next(loginError);
+            (err) => {
+                if (err) {
+                    return next(err);
                 }
 
                 req.flash(
@@ -62,27 +45,22 @@ module.exports.signup = async (req, res, next) => {
                     "Welcome to WanderLust!"
                 );
 
-                const redirectUrl =
-                    res.locals.returnTo || "/listings";
-
-                res.redirect(redirectUrl);
+                res.redirect(
+                    "/listings"
+                );
             }
         );
+
     } catch (error) {
-        // Duplicate username/email etc.
-        if (
-            error.code === 11000 ||
-            error.name === "UserExistsError"
-        ) {
-            req.flash(
-                "error",
-                "Username or email is already registered."
-            );
 
-            return res.redirect("/signup");
-        }
+        req.flash(
+            "error",
+            error.message
+        );
 
-        next(error);
+        res.redirect(
+            "/signup"
+        );
     }
 };
 
@@ -91,43 +69,66 @@ module.exports.signup = async (req, res, next) => {
 // RENDER LOGIN FORM
 // ==========================================
 
-module.exports.renderLoginForm = (req, res) => {
-    res.render("login.ejs");
+module.exports.renderLoginForm = (
+    req,
+    res
+) => {
+
+    res.render(
+        "listings/users/login.ejs"
+    );
 };
 
 
 // ==========================================
-// LOGIN
+// LOGIN USER
 // ==========================================
 
-module.exports.login = (req, res) => {
+module.exports.login = (
+    req,
+    res
+) => {
+
     req.flash(
         "success",
         "Welcome back to WanderLust!"
     );
 
     const redirectUrl =
-        res.locals.returnTo || "/listings";
+        res.locals.returnTo ||
+        "/listings";
 
-    res.redirect(redirectUrl);
+    res.redirect(
+        redirectUrl
+    );
 };
 
 
 // ==========================================
-// LOGOUT
+// LOGOUT USER
 // ==========================================
 
-module.exports.logout = (req, res, next) => {
-    req.logout((error) => {
-        if (error) {
-            return next(error);
+module.exports.logout = (
+    req,
+    res,
+    next
+) => {
+
+    req.logout(
+        (err) => {
+
+            if (err) {
+                return next(err);
+            }
+
+            req.flash(
+                "success",
+                "You have been logged out."
+            );
+
+            res.redirect(
+                "/listings"
+            );
         }
-
-        req.flash(
-            "success",
-            "You have been logged out."
-        );
-
-        res.redirect("/listings");
-    });
+    );
 };
