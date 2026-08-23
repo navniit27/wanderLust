@@ -18,7 +18,7 @@ const LocalStrategy = require("passport-local");
 const helmet = require("helmet");
 const compression = require("compression");
 
-const ExpressError = require("./utils/expressError");
+const ExpressError = require("./utils/ExpressError");
 
 const User = require("./models/user");
 
