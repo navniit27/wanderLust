@@ -71,7 +71,7 @@
     <% for(let listing of allListings) { %>
 <a href="/listings/<%= listing._id %>" class="listing-link">
   <div class="card col listing-card">
-  <img src="<%= listing.image.url %>" class="card-img-top listing-card-image" alt="<%= listing.title %>" loading="lazy" decoding="async">
+  <img src="<%= listing.image.url %>" class="card-img-top listing-card-image" alt="<%= listing.title %>" width="640" height="480" loading="lazy" decoding="async">
   <div class="card-img-overlay"></div>
   <div class="card-body">
     <p class="card-text">
@@ -89,3 +89,29 @@
 
 <% } %>
 </div>
+
+<% if (typeof totalPages !== "undefined" && totalPages > 1) { %>
+<nav class="mt-4 mb-4 d-flex justify-content-center" aria-label="Listings pagination">
+  <ul class="pagination">
+    <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+      <a
+        class="page-link"
+        href="/listings?page=<%= page - 1 %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+      >
+        Previous
+      </a>
+    </li>
+    <li class="page-item disabled">
+      <span class="page-link">Page <%= page %> of <%= totalPages %></span>
+    </li>
+    <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+      <a
+        class="page-link"
+        href="/listings?page=<%= page + 1 %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+      >
+        Next
+      </a>
+    </li>
+  </ul>
+</nav>
+<% } %>

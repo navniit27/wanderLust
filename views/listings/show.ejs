@@ -6,7 +6,15 @@
     </div>
 
     <div class="card col-6 offset-3 show-card listing-card">
-        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
+        <img
+            src="<%= listing.image.url %>"
+            class="card-img-top show-img"
+            alt="<%= listing.title %> in <%= listing.location %>"
+            width="800"
+            height="480"
+            loading="eager"
+            decoding="async"
+        >
         <div class="card-body">
             <p class="card-text"><i>Owned by: <%= listing.owner.username %></i></p>
             <p class="card-text"><%= listing.description %></p>
@@ -16,11 +24,12 @@
         </div>
     </div>
 
-    <% if(currUser && currUser._id.equals(listing.owner._id)){ %>
+    <% if(currUser && (currUser._id.equals(listing.owner._id) || currUser.role === 'admin')){ %>
     <div class="btns mb-3">
         <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
-        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="d-inline">
-            <button class="btn btn-dark offset-5">Delete</button>
+        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="d-inline js-confirm-delete" data-confirm="Delete this listing permanently?">
+            <%- include("../includes/csrf.ejs") %>
+            <button class="btn btn-dark offset-5" type="submit">Delete</button>
         </form>
     </div>
     <% } %>
@@ -28,9 +37,10 @@
     <hr class="col-8 offset-3">
 
     <div class="col-8 offset-3 mb-3">
-        <% if(currUser){ %>
+        <% if(currUser && !hasUserReviewed){ %>
         <h4>Leave a Review</h4>
         <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+            <%- include("../includes/csrf.ejs") %>
             <div class="mb-3 mt-3">
                 <label for="rating" class="form-label">Rating</label>
                 <fieldset class="starability-slot">
@@ -50,11 +60,14 @@
 
             <div class="mb-3">
                 <label for="comment" class="form-label">Comments</label>
-                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" maxlength="1000" required></textarea>
+                <div class="form-text"><span data-counter-for="comment">0</span>/1000</div>
                 <div class="invalid-feedback">Please add some comments for review</div>
             </div>
             <button class="btn btn-outline-dark">Submit</button>
         </form>
+        <% } else if (currUser && hasUserReviewed) { %>
+        <p class="text-muted">You already left a review for this listing.</p>
         <% } %>
 
         <% if(listing.reviews.length > 0) { %>
@@ -66,9 +79,15 @@
                     <h5 class="card-title">@<%= review.author.username %></h5>
                     <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
                     <p class="card-text"><%= review.comment %></p>
-                    <% if(currUser && currUser._id.equals(review.author._id)) { %>
-                    <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                        <button class="btn btn-sm btn-dark">Delete</button>
+                    <% const canDelete = currUser && (
+                        currUser._id.equals(review.author._id) ||
+                        currUser._id.equals(listing.owner._id) ||
+                        currUser.role === 'admin'
+                    ); %>
+                    <% if(canDelete) { %>
+                    <form class="mb-3 js-confirm-delete" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" data-confirm="Delete this review?">
+                        <%- include("../includes/csrf.ejs") %>
+                        <button class="btn btn-sm btn-dark" type="submit">Delete</button>
                     </form>
                     <% } %>
                 </div>

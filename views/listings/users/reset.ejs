@@ -1,0 +1,25 @@
+<% layout("layout/boilerplate") %>
+
+<div class="row mt-3">
+    <h1 class="col-6 offset-3">Reset Password</h1>
+    <div class="col-6 offset-3">
+        <form action="/reset-password/<%= token %>" method="POST" class="needs-validation" novalidate>
+            <%- include("../../includes/csrf.ejs") %>
+            <div class="mb-3">
+                <label for="password" class="form-label">New Password</label>
+                <div class="input-group">
+                    <input name="password" id="password" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required>
+                    <button type="button" class="btn btn-outline-secondary password-toggle" data-target="password" aria-label="Show password">Show</button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <div class="input-group">
+                    <input name="confirmPassword" id="confirmPassword" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required>
+                    <button type="button" class="btn btn-outline-secondary password-toggle" data-target="confirmPassword" aria-label="Show password">Show</button>
+                </div>
+            </div>
+            <button class="btn btn-success">Update password</button>
+        </form>
+    </div>
+</div>

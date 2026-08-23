@@ -4,6 +4,7 @@
     <h1 class="col-6 offset-3">Login</h1>
 <div class="col-6 offset-3">
     <form action="/login" method="POST" class="needs-validation" novalidate>
+    <%- include("../../includes/csrf.ejs") %>
     <div class="mb-3">
     <label for="username" class="form-label">Username</label>
     <input name="username" id="username" type="text" class="form-control" autocomplete="username" required>
@@ -11,10 +12,21 @@
 
     <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <input name="password" id="password" type="password" class="form-control" autocomplete="current-password" required>
-
+    <div class="input-group">
+      <input name="password" id="password" type="password" class="form-control" autocomplete="current-password" required>
+      <button type="button" class="btn btn-outline-secondary password-toggle" data-target="password" aria-label="Show password">Show</button>
     </div>
+    </div>
+
+    <div class="mb-3 form-check">
+      <input class="form-check-input" type="checkbox" value="on" id="remember" name="remember">
+      <label class="form-check-label" for="remember">Remember me</label>
+    </div>
+
     <button class="btn btn-success">Login</button>
+    <p class="mt-3 mb-0">
+      <a href="/forgot-password">Forgot password?</a>
+    </p>
     </form>
     </div>
 </div>

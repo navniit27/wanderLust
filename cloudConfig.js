@@ -23,7 +23,9 @@ const storage = new CloudinaryStorage({
     params: {
         folder:
             process.env.CLOUDINARY_FOLDER ||
-            "wanderlust_DEV",
+            (process.env.NODE_ENV === "production"
+                ? "wanderlust_PROD"
+                : "wanderlust_DEV"),
 
         resource_type: "image",
 

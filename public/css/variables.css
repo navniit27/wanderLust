@@ -1,0 +1,26 @@
+/* =========================================================
+   WANDERLUST - RESPONSIVE UI
+   PC + TABLET + MOBILE
+   ========================================================= */
+
+:root {
+    --primary: #ff385c;
+    --primary-dark: #e31b4f;
+    --text: #222222;
+    --muted: #717171;
+    --border: #e5e5e5;
+    --surface: #ffffff;
+    --soft: #f7f7f7;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.10);
+    --shadow-lg: 0 14px 35px rgba(0, 0, 0, 0.14);
+
+    --transition: 0.25s ease;
+}
+
+

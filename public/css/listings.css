@@ -1,0 +1,482 @@
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.btn.search-btn {
+    min-height: 42px;
+    padding: 0 1.1rem;
+
+    color: #ffffff;
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 999px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.btn.search-btn:hover {
+    color: #ffffff;
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(255, 56, 92, 0.22);
+}
+
+.btn.search-btn:active {
+    transform: scale(0.97);
+}
+
+.btn.search-btn i {
+    display: inline-block;
+}
+
+.form-control.search-inp {
+    min-height: 42px;
+    padding: 0.55rem 1.2rem;
+
+    font-size: 0.9rem;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.form-control.search-inp:focus {
+    border-color: #bbbbbb;
+
+    box-shadow:
+        0 0 0 3px rgba(255, 56, 92, 0.08);
+
+    outline: none;
+}
+
+
+/* =========================================================
+   LISTING FILTER BAR
+   ========================================================= */
+
+.listing-filters {
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 1.7rem;
+
+    padding: 0.75rem 0 0.5rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.listing-filters::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   FILTER ICONS
+   ========================================================= */
+
+.filter {
+    flex: 0 0 auto;
+
+    min-width: 62px;
+
+    text-align: center;
+    color: var(--muted);
+
+    opacity: 0.78;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition),
+        opacity var(--transition),
+        transform var(--transition);
+}
+
+.filter > div {
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter i {
+    font-size: 1.15rem;
+
+    transition:
+        transform 0.3s cubic-bezier(.2, .8, .2, 1),
+        color var(--transition);
+}
+
+.filter p {
+    margin: 0.4rem 0 0;
+
+    font-size: 0.72rem;
+    line-height: 1.2;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+.filter:hover {
+    color: var(--primary);
+    opacity: 1;
+
+    transform: translateY(-3px);
+}
+
+.filter:hover i {
+    transform: translateY(-2px) scale(1.18);
+}
+
+
+/* =========================================================
+   TAX TOGGLE
+   ========================================================= */
+
+.tax-toggle {
+    flex: 0 0 auto;
+
+    min-height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0.05rem 0 0 0.25rem;
+    padding: 0.35rem 0.75rem;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    box-shadow: var(--shadow-sm);
+
+    white-space: nowrap;
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.tax-toggle:hover {
+    border-color: #cccccc;
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-2px);
+}
+
+
+/* Bootstrap form-switch reset */
+
+.tax-toggle .form-check-reverse {
+    display: flex !important;
+
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 0.5rem;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    min-height: 0;
+}
+
+
+/* Toggle */
+
+.tax-toggle .form-check-input {
+    float: none !important;
+    position: relative !important;
+
+    flex: 0 0 auto;
+
+    width: 2.15rem !important;
+    height: 1.15rem !important;
+
+    margin: 0 !important;
+
+    cursor: pointer;
+
+    border-color: #cccccc;
+
+    transition:
+        background-color var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.tax-toggle .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(255, 56, 92, 0.10);
+}
+
+.tax-toggle .form-check-input:hover {
+    box-shadow:
+        0 0 0 4px rgba(255, 56, 92, 0.10);
+}
+
+
+/* Toggle text */
+
+.tax-toggle .form-check-label {
+    flex: 0 0 auto;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #555555;
+
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   LISTING GRID
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   Bootstrap .row handles the grid.
+   We DO NOT override .row with display:grid.
+*/
+
+.listing-link {
+    display: block;
+
+    color: inherit;
+    text-decoration: none;
+
+    min-width: 0;
+}
+
+.listing-card {
+    width: 100%;
+
+    margin-bottom: 2rem;
+
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+
+    background: transparent;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.28s cubic-bezier(.2, .8, .2, 1),
+        box-shadow 0.28s ease;
+}
+
+
+/* =========================================================
+   CARD IMAGE
+   ========================================================= */
+
+.listing-card-image,
+.card-img-top {
+    display: block;
+
+    width: 100% !important;
+    height: 20rem;
+    aspect-ratio: 4 / 3;
+
+    object-fit: cover !important;
+
+    border: 0;
+    border-radius: var(--radius-md) !important;
+
+    background: #eeeeee;
+
+    transform: translateZ(0);
+
+    transition:
+        transform 0.5s cubic-bezier(.2, .8, .2, 1),
+        filter 0.3s ease;
+}
+
+
+/* Card hover */
+
+.listing-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: var(--shadow-md);
+}
+
+.listing-card:hover .listing-card-image {
+    transform: scale(1.035);
+
+    filter: brightness(0.97);
+}
+
+
+/* =========================================================
+   CARD OVERLAY
+   ========================================================= */
+
+.card-img-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: var(--radius-md);
+
+    opacity: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.04),
+            transparent 45%,
+            rgba(0, 0, 0, 0.12)
+        );
+
+    pointer-events: none;
+
+    transition: opacity 0.3s ease;
+}
+
+.listing-card:hover .card-img-overlay {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   CARD BODY
+   ========================================================= */
+
+.listing-card .card-body {
+    padding: 0.7rem 0.15rem 0 !important;
+
+    background: transparent;
+}
+
+.card-text {
+    margin: 0;
+
+    color: var(--text);
+
+    line-height: 1.4;
+}
+
+.card-text b {
+    display: block;
+
+    margin-bottom: 0.2rem;
+
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* Price + tax */
+
+.card-text .price-line {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.25rem;
+
+    max-width: 100%;
+
+    white-space: nowrap;
+
+    font-size: 0.86rem;
+}
+
+.tax-info {
+    display: none;
+
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.78rem;
+    font-style: normal;
+
+    white-space: nowrap;
+}
+
+
+
+/* =========================================================
+   SHOW PAGE
+   ========================================================= */
+
+.show-img {
+    display: block;
+
+    width: 100%;
+    height: 30rem;
+
+    object-fit: cover;
+
+    border-radius: var(--radius-lg);
+
+    background: #eeeeee;
+}
+
+.show-card {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.btns {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.75rem;
+}
+
+.edit-img {
+    display: block;
+
+    width: 200px;
+    max-width: 100%;
+    height: auto;
+
+    margin-bottom: 10px;
+
+    border-radius: var(--radius-sm);
+}
+
+

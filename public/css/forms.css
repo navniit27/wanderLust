@@ -1,0 +1,41 @@
+/* =========================================================
+   CREATE / EDIT BUTTONS
+   ========================================================= */
+
+.add-btn,
+.edit-btn {
+    min-height: 44px;
+
+    padding: 0.65rem 1.2rem;
+
+    color: #ffffff !important;
+
+    background: var(--primary) !important;
+
+    border: 0 !important;
+    border-radius: var(--radius-sm) !important;
+
+    transition:
+        background var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.add-btn:hover,
+.edit-btn:hover {
+    color: #ffffff !important;
+
+    background: var(--primary-dark) !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(255, 56, 92, 0.20);
+}
+
+.add-btn:active,
+.edit-btn:active {
+    transform: scale(0.97);
+}
+
+

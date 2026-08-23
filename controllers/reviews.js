@@ -1,67 +1,103 @@
 const Listing = require("../models/listing");
 const Review = require("../models/review");
-
-
-// ==========================================
-// CREATE REVIEW
-// ==========================================
+const withTransaction = require("../utils/withTransaction");
 
 module.exports.createReview = async (req, res) => {
     const { id } = req.params;
 
-    // Listing find karo
-    const listing = await Listing.findById(id);
+    try {
+        const result = await withTransaction(async (session) => {
+            const listing = session
+                ? await Listing.findById(id).session(session)
+                : await Listing.findById(id);
 
-    if (!listing) {
-        req.flash("error", "Listing not found!");
-        return res.redirect("/listings");
+            if (!listing) {
+                return { missing: true };
+            }
+
+            const existing = session
+                ? await Review.findOne({
+                      listing: id,
+                      author: req.user._id,
+                  }).session(session)
+                : await Review.findOne({
+                      listing: id,
+                      author: req.user._id,
+                  });
+
+            if (existing) {
+                return { duplicate: true };
+            }
+
+            const review = new Review(req.body.review);
+            review.author = req.user._id;
+            review.listing = listing._id;
+
+            listing.reviews.push(review._id);
+
+            const opts = session ? { session } : {};
+            await review.save(opts);
+            await listing.save(opts);
+
+            return { ok: true };
+        });
+
+        if (result?.missing) {
+            req.flash("error", "Listing not found!");
+            return res.redirect("/listings");
+        }
+
+        if (result?.duplicate) {
+            req.flash("error", "You already reviewed this listing.");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        req.flash("success", "New review added!");
+        res.redirect(`/listings/${id}`);
+    } catch (err) {
+        if (err?.code === 11000) {
+            req.flash("error", "You already reviewed this listing.");
+            return res.redirect(`/listings/${id}`);
+        }
+        throw err;
     }
-
-    // New review create karo
-    const review = new Review(req.body.review);
-
-    // Logged-in user ko author banao
-    review.author = req.user._id;
-
-    // Listing ke reviews array mein review add karo
-    listing.reviews.push(review._id);
-
-    // Dono save karo
-    await review.save();
-    await listing.save();
-
-    req.flash("success", "New review added!");
-
-    res.redirect(`/listings/${id}`);
 };
-
-
-// ==========================================
-// DELETE REVIEW
-// ==========================================
 
 module.exports.deleteReview = async (req, res) => {
     const { id, reviewId } = req.params;
 
-    // Ensure that the review belongs to this listing before deleting it.
-    const listing = await Listing.findOneAndUpdate(
-        { _id: id, reviews: reviewId },
-        { $pull: { reviews: reviewId } },
-    );
+    const result = await withTransaction(async (session) => {
+        const opts = session ? { session } : {};
 
-    if (!listing) {
+        const listing = await Listing.findOneAndUpdate(
+            { _id: id, reviews: reviewId },
+            { $pull: { reviews: reviewId } },
+            opts
+        );
+
+        if (!listing) {
+            return { missing: "listing" };
+        }
+
+        const deletedReview = await Review.findByIdAndDelete(reviewId, opts);
+
+        if (!deletedReview) {
+            return { missing: "review" };
+        }
+
+        return { ok: true };
+    });
+
+    if (result?.missing === "listing") {
         req.flash("error", "Review not found for this listing!");
         return res.redirect(`/listings/${id}`);
     }
 
-    const deletedReview = await Review.findByIdAndDelete(reviewId);
-
-    if (!deletedReview) {
+    if (result?.missing === "review") {
         req.flash("error", "Review was already deleted!");
         return res.redirect(`/listings/${id}`);
     }
 
     req.flash("success", "Review deleted!");
-
     res.redirect(`/listings/${id}`);
 };

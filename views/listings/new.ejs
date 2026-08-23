@@ -18,11 +18,12 @@
 
         <form
             method="POST"
-            action="/listings"
+            action="/listings?_csrf=<%= csrfToken %>"
             novalidate
             class="needs-validation"
             enctype="multipart/form-data"
         >
+            <%- include("../includes/csrf.ejs") %>
 
             <!-- TITLE -->
 

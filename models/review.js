@@ -5,7 +5,7 @@ const reviewSchema = new Schema(
     {
         comment: {
             type: String,
-            trim: true,       
+            trim: true,
         },
         rating: {
             type: Number,
@@ -19,9 +19,18 @@ const reviewSchema = new Schema(
         author: {
             type: Schema.Types.ObjectId,
             ref: "User",
+            required: true,
+        },
+        listing: {
+            type: Schema.Types.ObjectId,
+            ref: "Listing",
+            required: true,
         },
     },
-    { timestamps: true }  
+    { timestamps: true }
 );
+
+// One review per user per listing
+reviewSchema.index({ listing: 1, author: 1 }, { unique: true });
 
 module.exports = mongoose.model("Review", reviewSchema);

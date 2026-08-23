@@ -4,9 +4,10 @@
     <h1 class="col-6 offset-3">SignUp For WanderLust</h1>
 <div class="col-6 offset-3">
     <form action="/signup" method="POST" class="needs-validation" novalidate>
+    <%- include("../../includes/csrf.ejs") %>
     <div class="mb-3">
     <label for="username" class="form-label">Username</label>
-    <input name="username" id="username" type="text" class="form-control" autocomplete="username" required>
+    <input name="username" id="username" type="text" class="form-control" autocomplete="username" minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" required>
     <div class="valid-feedback">Looks good !</div>
     </div>
 
@@ -17,9 +18,21 @@
 
     <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <input name="password" id="password" type="password" class="form-control" autocomplete="new-password" required>
-
+    <div class="input-group">
+      <input name="password" id="password" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required>
+      <button type="button" class="btn btn-outline-secondary password-toggle" data-target="password" aria-label="Show password">Show</button>
     </div>
+    <div class="form-text">At least 8 characters.</div>
+    </div>
+
+    <div class="mb-3">
+    <label for="confirmPassword" class="form-label">Confirm Password</label>
+    <div class="input-group">
+      <input name="confirmPassword" id="confirmPassword" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required>
+      <button type="button" class="btn btn-outline-secondary password-toggle" data-target="confirmPassword" aria-label="Show password">Show</button>
+    </div>
+    </div>
+
     <button class="btn btn-success">signUp</button>
     </form>
     </div>
