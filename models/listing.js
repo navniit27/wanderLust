@@ -3,15 +3,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 
-// ==========================================
-// LISTING SCHEMA
-// ==========================================
 
 const listingSchema = new Schema(
     {
-        // ======================================
-        // BASIC LISTING INFORMATION
-        // ======================================
 
         title: {
             type: String,
@@ -83,9 +77,6 @@ const listingSchema = new Schema(
         },
 
 
-        // ======================================
-        // LISTING IMAGE
-        // ======================================
 
         image: {
             url: {
@@ -104,9 +95,6 @@ const listingSchema = new Schema(
         },
 
 
-        // ======================================
-        // OWNER
-        // ======================================
 
         owner: {
             type: Schema.Types.ObjectId,
@@ -117,9 +105,6 @@ const listingSchema = new Schema(
         },
 
 
-        // ======================================
-        // REVIEWS
-        // ======================================
 
         reviews: [
             {
@@ -136,13 +121,7 @@ const listingSchema = new Schema(
 );
 
 
-// ==========================================
-// DATABASE INDEXES
-// ==========================================
 
-// Text index for future full-text search.
-// Current search controller can continue
-// using its existing working search logic.
 
 listingSchema.index({
     title: "text",
@@ -151,16 +130,12 @@ listingSchema.index({
 });
 
 
-// Useful for newest-listings-first queries.
 
 listingSchema.index({
     createdAt: -1,
 });
 
 
-// ==========================================
-// MODEL
-// ==========================================
 
 const Listing = mongoose.model(
     "Listing",

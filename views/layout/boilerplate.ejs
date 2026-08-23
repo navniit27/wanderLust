@@ -9,21 +9,9 @@
     >
 
     <meta name="theme-color" content="#ffffff">
-    <meta name="description" content="<%= typeof pageDescription !== 'undefined' ? pageDescription : 'Discover and share unique stays around the world with WanderLust.' %>">
-    <link rel="canonical" href="<%= (typeof APP_URL !== 'undefined' && APP_URL) ? APP_URL : '' %><%= typeof canonicalPath !== 'undefined' ? canonicalPath : '/' %>">
 
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="<%= typeof pageTitle !== 'undefined' ? pageTitle : 'WanderLust' %>">
-    <meta property="og:description" content="<%= typeof pageDescription !== 'undefined' ? pageDescription : 'Discover and share unique stays around the world with WanderLust.' %>">
-    <meta property="og:site_name" content="WanderLust">
+    <title>WanderLust</title>
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<%= typeof pageTitle !== 'undefined' ? pageTitle : 'WanderLust' %>">
-    <meta name="twitter:description" content="<%= typeof pageDescription !== 'undefined' ? pageDescription : 'Discover and share unique stays around the world with WanderLust.' %>">
-
-    <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'WanderLust' %></title>
-
-    <!-- Bootstrap -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
@@ -31,7 +19,6 @@
         crossorigin="anonymous"
     >
 
-    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
@@ -40,7 +27,6 @@
         referrerpolicy="no-referrer"
     >
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -49,14 +35,15 @@
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="/css/variables.css">
-    <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/navbar.css">
-    <link rel="stylesheet" href="/css/listings.css">
-    <link rel="stylesheet" href="/css/forms.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/responsive.css">
-    <link rel="stylesheet" href="/css/rating.css">
+    <link
+        rel="stylesheet"
+        href="/css/style.css?v=3"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/rating.css?v=1"
+    >
 </head>
 
 <body>
@@ -66,20 +53,11 @@
     <main class="container">
         <%- include("../includes/flash.ejs") %>
 
-        <% if (currUser && !currUser.emailVerified && currUser.role !== 'admin') { %>
-            <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2" role="status">
-                <span>Please verify your email to create listings and reviews.</span>
-                <form action="/resend-verification" method="POST" class="m-0">
-                    <%- include("../includes/csrf.ejs") %>
-                    <button type="submit" class="btn btn-sm btn-outline-dark">Resend verification</button>
-                </form>
-            </div>
-        <% } %>
-
         <%- body %>
     </main>
 
     <%- include("../includes/footer.ejs") %>
+
 
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

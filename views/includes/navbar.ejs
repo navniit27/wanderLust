@@ -23,7 +23,6 @@
         >
 
 
-            <!-- EXPLORE -->
 
             <div class="navbar-nav">
 
@@ -37,7 +36,6 @@
             </div>
 
 
-            <!-- SEARCH BAR -->
 
             <div class="navbar-nav ms-auto">
 
@@ -72,7 +70,6 @@
             </div>
 
 
-            <!-- RIGHT NAVIGATION -->
 
             <div class="navbar-nav ms-auto">
 
@@ -111,7 +108,7 @@
                         method="POST"
                         class="d-inline"
                     >
-                        <%- include("./csrf.ejs") %>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                         <button
                             type="submit"

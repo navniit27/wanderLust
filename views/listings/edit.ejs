@@ -8,8 +8,8 @@
                 <%= validationError %>
             </div>
         <% } %>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT&_csrf=<%= encodeURIComponent(csrfToken) %>" novalidate  class="needs-validation" enctype="multipart/form-data">
-    <%- include("../includes/csrf.ejs") %>
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate  class="needs-validation" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input  name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required>

@@ -1,6 +1,5 @@
 <% layout("layout/boilerplate") %>
 
-<body>
 
 <div class="row mt-3">
     <div class="col-8 offset-2">
@@ -18,14 +17,14 @@
 
         <form
             method="POST"
-            action="/listings?_csrf=<%= csrfToken %>"
+            action="/listings"
             novalidate
             class="needs-validation"
             enctype="multipart/form-data"
         >
-            <%- include("../includes/csrf.ejs") %>
 
-            <!-- TITLE -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
 
             <div class="mb-3">
 
@@ -57,7 +56,6 @@
             </div>
 
 
-            <!-- DESCRIPTION -->
 
             <div class="mb-3">
 
@@ -83,7 +81,6 @@
             </div>
 
 
-            <!-- IMAGE -->
 
             <div class="mb-3">
 
@@ -109,11 +106,9 @@
             </div>
 
 
-            <!-- PRICE + COUNTRY -->
 
             <div class="row">
 
-                <!-- PRICE -->
 
                 <div class="mb-3 col-md-4">
 
@@ -142,7 +137,6 @@
                 </div>
 
 
-                <!-- COUNTRY -->
 
                 <div class="mb-3 col-md-8">
 
@@ -172,7 +166,6 @@
             </div>
 
 
-            <!-- LOCATION -->
 
             <div class="mb-3">
 
@@ -200,7 +193,6 @@
             </div>
 
 
-            <!-- SUBMIT -->
 
             <button
                 type="submit"
@@ -217,5 +209,3 @@
     </div>
 </div>
 
-</body>
-</html>

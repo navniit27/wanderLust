@@ -2,27 +2,29 @@ const express = require("express");
 const router = express.Router();
 
 const multer = require("multer");
-const { cloudinary } = require("../cloudConfig");
-const { validateAndUploadImage } = require("../utils/uploadImage");
+const { storage, cloudinary } = require("../cloudConfig");
 
 const wrapAsync = require("../utils/wrapAsync");
-const { writeLimiter } = require("../utils/rateLimiters");
 
 const {
     isLoggedIn,
+    csrfProtection,
     isOwner,
     validateListing,
-    requireEmailVerified,
 } = require("../middleware");
 
 const listingController = require("../controllers/listings");
 
+
+
 const upload = multer({
-    storage: multer.memoryStorage(),
+    storage,
+
     limits: {
         fileSize: 5 * 1024 * 1024,
         files: 1,
     },
+
     fileFilter: (req, file, cb) => {
         const allowedMimeTypes = [
             "image/jpeg",
@@ -42,97 +44,130 @@ const upload = multer({
     },
 });
 
+
+
 const cleanupUploadedImage = async (req) => {
-    if (!req.uploadedImage?.filename) {
+    if (!req.file?.filename) {
         return;
     }
 
     try {
-        await cloudinary.uploader.destroy(req.uploadedImage.filename, {
+        await cloudinary.uploader.destroy(req.file.filename, {
             resource_type: "image",
             invalidate: true,
         });
+
+        console.log(
+            `Cleaned up Cloudinary image: ${req.file.filename}`
+        );
     } catch (error) {
-        console.error("Cloudinary cleanup failed:", error.message);
+        console.error(
+            "Cloudinary cleanup failed:",
+            error.message
+        );
     }
 };
 
+
+
 const handleUpload = (req, res, next) => {
     upload.single("image")(req, res, async (err) => {
-        if (err) {
-            if (err instanceof multer.MulterError) {
-                if (err.code === "LIMIT_FILE_SIZE") {
-                    return res.status(400).render("error.ejs", {
-                        err: {
-                            statusCode: 400,
-                            message: "Image size must be less than 5 MB.",
-                        },
-                    });
-                }
+        if (!err) {
+            return next();
+        }
+
+        if (req.file?.filename) {
+            await cleanupUploadedImage(req);
+        }
+
+        if (err instanceof multer.MulterError) {
+            if (err.code === "LIMIT_FILE_SIZE") {
+                return res.status(400).render("error.ejs", {
+                    err: {
+                        statusCode: 400,
+                        message:
+                            "Image size must be less than 5 MB.",
+                    },
+                });
             }
 
             return res.status(400).render("error.ejs", {
                 err: {
                     statusCode: 400,
-                    message: err.message || "Image upload failed.",
+                    message: `Image upload failed: ${err.message}`,
                 },
             });
         }
 
-        if (!req.file) {
-            return next();
-        }
-
-        try {
-            req.uploadedImage = await validateAndUploadImage(req.file);
-            return next();
-        } catch (uploadErr) {
-            return res.status(400).render("error.ejs", {
-                err: {
-                    statusCode: 400,
-                    message: uploadErr.message || "Image upload failed.",
-                },
-            });
-        }
+        return res.status(400).render("error.ejs", {
+            err: {
+                statusCode: 400,
+                message: err.message || "Image upload failed.",
+            },
+        });
     });
 };
 
+
+
 router
     .route("/")
-    .get(wrapAsync(listingController.index))
+    .get(
+        wrapAsync(listingController.index)
+    )
+
     .post(
         isLoggedIn,
-        requireEmailVerified,
-        writeLimiter,
+
         handleUpload,
+
+        csrfProtection,
+
         validateListing,
+
         wrapAsync(listingController.createPost)
     );
+
+
 
 router.get(
     "/new",
     isLoggedIn,
-    requireEmailVerified,
     listingController.renderNewForm
 );
 
+
+
 router
     .route("/:id")
-    .get(wrapAsync(listingController.showListing))
+    .get(
+        wrapAsync(listingController.showListing)
+    )
+
     .put(
         isLoggedIn,
-        writeLimiter,
+
         isOwner,
+
         handleUpload,
+
+        csrfProtection,
+
         validateListing,
+
         wrapAsync(listingController.updateListing)
     )
+
     .delete(
         isLoggedIn,
-        writeLimiter,
+        csrfProtection,
+
         isOwner,
+
         wrapAsync(listingController.deleteListing)
     );
+
+
 
 router.get(
     "/:id/edit",
@@ -141,5 +176,5 @@ router.get(
     wrapAsync(listingController.renderEditForm)
 );
 
+
 module.exports = router;
-module.exports.cleanupUploadedImage = cleanupUploadedImage;

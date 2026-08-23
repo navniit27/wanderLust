@@ -1,15 +1,12 @@
 {
   "name": "wanderlust",
   "version": "1.0.0",
-  "description": "An Airbnb-inspired full-stack listing platform built with MERN stack",
+  "description": "An Airbnb-inspired full-stack listing platform built with Node.js, Express, MongoDB, EJS, and Bootstrap.",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "test": "jest --runInBand --forceExit",
+    "lint": "find . -path ./node_modules -prune -o -name '*.js' -print0 | xargs -0 -n1 node --check",
     "seed": "node init/index.js"
   },
   "engines": {
@@ -17,7 +14,6 @@
   },
   "keywords": [
     "airbnb",
-    "mern",
     "express",
     "mongodb",
     "nodejs",
@@ -34,30 +30,18 @@
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^4.19.2",
-    "express-rate-limit": "^8.2.1",
     "express-session": "^1.19.0",
     "helmet": "^8.3.0",
     "joi": "^18.1.2",
     "method-override": "^3.0.0",
     "mongoose": "^8.4.1",
-    "morgan": "^1.11.0",
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "nodemailer": "9.0.5",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^9.0.1",
-    "sharp": "0.35.3"
+    "passport-local-mongoose": "^9.0.1"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint": "10.9.0",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.11.0",
-    "jest": "^30.0.5",
-    "mongodb-memory-server": "^10.2.0",
-    "nodemon": "^3.1.0",
-    "prettier": "^3.6.2",
-    "supertest": "^7.1.4"
+    "nodemon": "^3.1.0"
   }
 }

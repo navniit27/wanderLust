@@ -3,11 +3,11 @@
 <div class="row mt-3">
     <h1 class="col-6 offset-3">SignUp For WanderLust</h1>
 <div class="col-6 offset-3">
-    <form action="/signup" method="POST" class="needs-validation" novalidate>
-    <%- include("../../includes/csrf.ejs") %>
+    <form id="signup-form" action="/signup" method="POST" class="needs-validation" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="mb-3">
     <label for="username" class="form-label">Username</label>
-    <input name="username" id="username" type="text" class="form-control" autocomplete="username" minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" required>
+    <input name="username" id="username" type="text" class="form-control" autocomplete="username" required>
     <div class="valid-feedback">Looks good !</div>
     </div>
 
@@ -18,21 +18,11 @@
 
     <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <div class="input-group">
-      <input name="password" id="password" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required>
-      <button type="button" class="btn btn-outline-secondary password-toggle" data-target="password" aria-label="Show password">Show</button>
-    </div>
-    <div class="form-text">At least 8 characters.</div>
-    </div>
+    <input name="password" id="password" type="password" class="form-control" autocomplete="new-password" minlength="8" required aria-describedby="password-help">
+    <div id="password-help" class="form-text">Password must be at least 8 characters.</div>
+    <div class="invalid-feedback">Password must be at least 8 characters.</div>
 
-    <div class="mb-3">
-    <label for="confirmPassword" class="form-label">Confirm Password</label>
-    <div class="input-group">
-      <input name="confirmPassword" id="confirmPassword" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required>
-      <button type="button" class="btn btn-outline-secondary password-toggle" data-target="confirmPassword" aria-label="Show password">Show</button>
     </div>
-    </div>
-
     <button class="btn btn-success">signUp</button>
     </form>
     </div>

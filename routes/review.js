@@ -2,32 +2,35 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 
 const wrapAsync = require("../utils/wrapAsync");
-const { writeLimiter } = require("../utils/rateLimiters");
 
 const {
     isLoggedIn,
+    csrfProtection,
     validateReview,
-    canDeleteReview,
-    requireEmailVerified,
+    isReviewAuthor,
 } = require("../middleware");
 
 const reviewController = require("../controllers/reviews");
 
+
+
 router.post(
     "/",
     isLoggedIn,
-    requireEmailVerified,
-    writeLimiter,
+    csrfProtection,
     validateReview,
     wrapAsync(reviewController.createReview)
 );
 
+
+
 router.delete(
     "/:reviewId",
     isLoggedIn,
-    writeLimiter,
-    canDeleteReview,
+    csrfProtection,
+    isReviewAuthor,
     wrapAsync(reviewController.deleteReview)
 );
+
 
 module.exports = router;
