@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const { listingSchema, reviewSchema } = require("./schema");
-const ExpressError = require("./utils/ExpressError");
+const ExpressError = require("./utils/expressError");
 const Listing = require("./models/listing");
 const Review = require("./models/review");
 const { cloudinary } = require("./cloudConfig");
