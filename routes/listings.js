@@ -113,6 +113,10 @@ const handleUpload = (req, res, next) => {
 router
     .route("/")
     .get(
+        (req, res, next) => {
+            console.log("🔥 LISTINGS GET ROUTE REACHED");
+            next();
+        },
         wrapAsync(listingController.index)
     )
 
