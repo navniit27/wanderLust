@@ -22,7 +22,7 @@
   "author": "Navneet",
   "license": "MIT",
   "dependencies": {
-    "cloudinary": "^1.21.0",
+    "cloudinary": "^2.10.1",
     "compression": "^1.8.1",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^6.0.0",
