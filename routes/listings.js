@@ -68,8 +68,6 @@ const cleanupUploadedImage = async (req) => {
     }
 };
 
-
-
 const handleUpload = (req, res, next) => {
     upload.single("image")(req, res, async (err) => {
         if (!err) {
@@ -108,39 +106,24 @@ const handleUpload = (req, res, next) => {
     });
 };
 
-
-
 router
     .route("/")
     .get(
-        (req, res, next) => {
-            console.log("🔥 LISTINGS GET ROUTE REACHED");
-            next();
-        },
         wrapAsync(listingController.index)
     )
-
     .post(
         isLoggedIn,
-
         handleUpload,
-
         csrfProtection,
-
         validateListing,
-
         wrapAsync(listingController.createPost)
     );
-
-
 
 router.get(
     "/new",
     isLoggedIn,
     listingController.renderNewForm
 );
-
-
 
 router
     .route("/:id")

@@ -300,11 +300,6 @@ const reviewRouter =
 const userRouter =
     require("./routes/user");
 
-app.use("/listings", (req, res, next) => {
-    console.log("🔥 /listings ROUTER REACHED:", req.method, req.originalUrl);
-    next();
-});
-
 app.use(
     "/listings",
     listingRouter
