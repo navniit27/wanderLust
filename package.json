@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "lint": "find . -path ./node_modules -prune -o -name '*.js' -print0 | xargs -0 -n1 node --check",
+    "lint": "node scripts/check-js-syntax.js",
     "seed": "node init/index.js"
   },
   "engines": {
