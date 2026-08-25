@@ -2,13 +2,13 @@ name: WanderLust CI/CD Pipeline
 
 on:
   push:
-    branches: [main, master, optimize]
+    branches: [main, master]
   pull_request:
-    branches: [main, master, optimize]
+    branches: [main, master]
 
 jobs:
   lint-test-audit:
-    name: Lint, Test & Audit
+    name: Syntax Check & Security Audit
     runs-on: ubuntu-latest
 
     steps:
