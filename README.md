@@ -95,14 +95,14 @@ docker compose down -v # also removes the local MongoDB volume
 
 ## CI/CD
 
-The GitHub Actions workflow runs on pull requests and pushes to `main`, `master`, and `optimize`:
+The GitHub Actions workflow runs on pull requests and pushes to `main` and `master`:
 
 1. Installs dependencies with `npm ci`.
 2. Checks syntax for every project JavaScript file outside `node_modules`.
 3. Runs a high-severity `npm audit` check and reports findings without blocking the pipeline.
 4. Builds and inspects the production Docker image.
 
-On pushes to `main`, a final job triggers a Render deployment only when the repository secret `RENDER_DEPLOY_HOOK_URL` is configured. Pushes to `master` and `optimize` do not deploy to Render.
+On pushes to `main`, a final job triggers a Render deployment only when the repository secret `RENDER_DEPLOY_HOOK_URL` is configured. Pushes to `master` do not deploy to Render.
 
 ## Routes
 
