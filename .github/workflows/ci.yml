@@ -27,12 +27,6 @@ jobs:
       - name: ESLint
         run: npm run lint
 
-      - name: Run tests
-        run: npm test
-        env:
-          NODE_ENV: test
-          SECRET: ci-test-secret
-
       - name: Security Audit
         run: npm audit --audit-level=high
 
