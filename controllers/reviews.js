@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 const Review = require("../models/review");
 
@@ -5,6 +6,11 @@ const Review = require("../models/review");
 
 module.exports.createReview = async (req, res) => {
     const { id } = req.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
 
     const listing = await Listing.findById(id);
 
