@@ -5,23 +5,24 @@ const reviewSchema = new Schema(
     {
         comment: {
             type: String,
-            trim: true,       
+            trim: true,
+            required: [true, "Comment is required."],
+            minlength: [2, "Comment must be at least 2 characters."],
+            maxlength: [1000, "Comment cannot exceed 1000 characters."],
         },
         rating: {
             type: Number,
-            min: 1,
-            max: 5,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
+            required: [true, "Rating is required."],
+            min: [1, "Rating must be between 1 and 5."],
+            max: [5, "Rating must be between 1 and 5."],
         },
         author: {
             type: Schema.Types.ObjectId,
             ref: "User",
+            required: true,
         },
     },
-    { timestamps: true }  
+    { timestamps: true }
 );
 
 module.exports = mongoose.model("Review", reviewSchema);
