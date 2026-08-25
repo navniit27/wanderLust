@@ -1,9 +1,5 @@
 const mongoose = require("mongoose");
-
 const { Schema } = mongoose;
-
-
-
 const listingSchema = new Schema(
     {
 
@@ -76,8 +72,6 @@ const listingSchema = new Schema(
             ],
         },
 
-
-
         image: {
             url: {
                 type: String,
@@ -94,8 +88,6 @@ const listingSchema = new Schema(
             },
         },
 
-
-
         owner: {
             type: Schema.Types.ObjectId,
 
@@ -103,8 +95,6 @@ const listingSchema = new Schema(
 
             required: true,
         },
-
-
 
         reviews: [
             {
@@ -120,27 +110,19 @@ const listingSchema = new Schema(
     }
 );
 
-
-
-
 listingSchema.index({
     title: "text",
     location: "text",
     country: "text",
 });
 
-
-
 listingSchema.index({
     createdAt: -1,
 });
-
-
 
 const Listing = mongoose.model(
     "Listing",
     listingSchema
 );
-
 
 module.exports = Listing;

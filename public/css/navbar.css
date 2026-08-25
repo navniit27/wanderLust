@@ -6,10 +6,8 @@
     min-height: 5rem;
     background: rgba(255, 255, 255, 0.96);
     border-bottom: 1px solid #eeeeee;
-
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -18,7 +16,6 @@
 .fa-compass {
     color: var(--primary);
     font-size: 2rem;
-
     transition:
         transform var(--transition),
         color var(--transition);

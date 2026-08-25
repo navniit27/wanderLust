@@ -1,7 +1,4 @@
 const Joi = require("joi");
-
-
-
 const listingSchema = Joi.object({
 
     listing: Joi.object({
@@ -92,8 +89,6 @@ const listingSchema = Joi.object({
 
 });
 
-
-
 const reviewSchema = Joi.object({
 
     review: Joi.object({
@@ -135,7 +130,6 @@ const reviewSchema = Joi.object({
     }).required(),
 
 });
-
 
 module.exports = {
     listingSchema,

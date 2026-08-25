@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 const Review = require("../models/review");
 
-
-
 module.exports.createReview = async (req, res) => {
     const { id } = req.params;
 
@@ -39,8 +37,6 @@ module.exports.createReview = async (req, res) => {
 
     res.redirect(`/listings/${id}`);
 };
-
-
 
 module.exports.deleteReview = async (req, res) => {
     const { id, reviewId } = req.params;

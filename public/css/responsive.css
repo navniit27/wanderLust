@@ -44,7 +44,6 @@
 
     .navbar {
         min-height: 3.7rem;
-
         padding-left: 0.7rem;
         padding-right: 0.7rem;
     }
@@ -55,12 +54,9 @@
 
     .nav-link {
         min-height: 44px;
-
         display: flex;
         align-items: center;
-
         padding: 0.4rem !important;
-
         font-size: 0.82rem;
     }
 
@@ -69,14 +65,12 @@
 
     .form-control.search-inp {
         min-height: 40px;
-
         padding-left: 1rem;
         padding-right: 1rem;
     }
 
     .btn.search-btn {
         min-height: 40px;
-
         padding: 0 0.85rem;
     }
 
@@ -85,7 +79,6 @@
 
     .listing-filters {
         gap: 0.9rem;
-
         padding-top: 0.6rem;
         padding-bottom: 0.35rem;
     }
@@ -100,7 +93,6 @@
 
     .filter p {
         margin-top: 0.35rem;
-
         font-size: 0.64rem;
     }
 
@@ -109,13 +101,9 @@
 
     .tax-toggle {
         min-height: 40px;
-
         margin-left: 0.1rem;
-
         padding: 0.3rem 0.6rem;
-
         border-radius: 12px;
-
         box-shadow: none;
     }
 
@@ -137,14 +125,12 @@
 
     .listing-card {
         margin-bottom: 1.4rem;
-
         border-radius: 12px !important;
     }
 
     .listing-card-image,
     .card-img-top {
         height: 14rem;
-
         border-radius: 12px !important;
     }
 
@@ -169,7 +155,6 @@
 
     .show-img {
         height: 14rem;
-
         border-radius: 12px;
     }
 
@@ -180,14 +165,12 @@
 
     .btns {
         flex-direction: column;
-
         gap: 0.55rem;
     }
 
     .btns a,
     .btns button {
         width: 100%;
-
         min-height: 44px;
     }
 
@@ -205,7 +188,6 @@
     .add-btn,
     .edit-btn {
         width: 100%;
-
         min-height: 44px;
     }
 
@@ -214,24 +196,19 @@
 
     .f-info {
         min-height: auto;
-
         padding: 1.3rem 1rem;
-
         gap: 0.65rem;
     }
 
     .f-info-links {
         flex-direction: column;
-
         gap: 0.15rem;
     }
 
     .f-info-links a {
         min-height: 40px;
-
         display: inline-flex;
         align-items: center;
-
         font-size: 0.82rem;
     }
 
@@ -250,13 +227,11 @@
 
     .listing-card:hover {
         transform: none;
-
         box-shadow: none;
     }
 
     .listing-card:hover .listing-card-image {
         transform: none;
-
         filter: none;
     }
 

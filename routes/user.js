@@ -12,8 +12,6 @@ const {
 
 const wrapAsync = require("../utils/wrapAsync");
 
-
-
 router
     .route("/signup")
     .get(userController.renderSignupForm)
@@ -21,8 +19,6 @@ router
         csrfProtection,
         wrapAsync(userController.signup)
     );
-
-
 
 router
     .route("/login")
@@ -36,8 +32,6 @@ router
         }),
         userController.login
     );
-
-
 
 router.post(
     "/logout",

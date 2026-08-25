@@ -2,10 +2,7 @@ const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 const Review = require("../models/review");
 const { cloudinary } = require("../cloudConfig");
-
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-
 
 module.exports.index = async (req, res) => {
 
@@ -55,13 +52,9 @@ module.exports.index = async (req, res) => {
     );
 };
 
-
-
 module.exports.renderNewForm = (req, res) => {
     res.render("listings/new.ejs", { listing: {} });
 };
-
-
 
 module.exports.showListing = async (req, res) => {
 
@@ -99,8 +92,6 @@ module.exports.showListing = async (req, res) => {
     );
 };
 
-
-
 module.exports.createPost = async (req, res) => {
 
     const listingData =
@@ -134,8 +125,6 @@ module.exports.createPost = async (req, res) => {
     );
 };
 
-
-
 module.exports.renderEditForm = async (
     req,
     res
@@ -157,8 +146,6 @@ module.exports.renderEditForm = async (
         );
     }
 
-
-
     res.render(
         "listings/edit.ejs",
         {
@@ -166,8 +153,6 @@ module.exports.renderEditForm = async (
         }
     );
 };
-
-
 
 module.exports.updateListing = async (
     req,
@@ -190,14 +175,10 @@ module.exports.updateListing = async (
         );
     }
 
-
-
     Object.assign(
         listing,
         req.body.listing
     );
-
-
 
     let oldImageFilename;
 
@@ -213,7 +194,6 @@ module.exports.updateListing = async (
 
 
     }
-
 
     await listing.save();
 
@@ -245,8 +225,6 @@ module.exports.updateListing = async (
     );
 };
 
-
-
 module.exports.deleteListing = async (
     req,
     res
@@ -268,7 +246,6 @@ module.exports.deleteListing = async (
             "/listings"
         );
     }
-
 
     const imageFilename = listing.image?.filename;
 

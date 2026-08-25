@@ -29,8 +29,8 @@
   })
 })()
 
-
 // Review form validation
+
 document.querySelectorAll('.review-form-card form').forEach((form) => {
   form.addEventListener('submit', (event) => {
     const rating = form.querySelector(
@@ -52,7 +52,6 @@ document.querySelectorAll('.review-form-card form').forEach((form) => {
   })
 })
 
-
 const taxToggle = document.getElementById('tax-toggle')
 
 if (taxToggle) {
@@ -72,7 +71,6 @@ if (taxToggle) {
     })
   })
 }
-
 
 // Copy the current listing URL
 document.querySelectorAll('[data-share-button]').forEach((button) => {
@@ -120,7 +118,6 @@ document.querySelectorAll('[data-share-button]').forEach((button) => {
     }
   })
 })
-
 
 document.querySelectorAll('[data-flash-alert]').forEach((flash) => {
   const closeFlash = () => {

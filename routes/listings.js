@@ -15,8 +15,6 @@ const {
 
 const listingController = require("../controllers/listings");
 
-
-
 const upload = multer({
     storage,
 
@@ -43,8 +41,6 @@ const upload = multer({
         cb(null, true);
     },
 });
-
-
 
 const cleanupUploadedImage = async (req) => {
     if (!req.file?.filename) {
@@ -133,24 +129,17 @@ router
 
     .put(
         isLoggedIn,
-
         isOwner,
-
         handleUpload,
-
         csrfProtection,
-
         validateListing,
-
         wrapAsync(listingController.updateListing)
     )
 
     .delete(
         isLoggedIn,
         csrfProtection,
-
         isOwner,
-
         wrapAsync(listingController.deleteListing)
     );
 
